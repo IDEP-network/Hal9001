@@ -4,7 +4,7 @@ export default {
     redisUrl: 'redis://127.0.0.1:6379',
     discordToken: "<bot_token>",
     prefix: '!',
-    notifyChannel: '<bot_chanel>'
+    notifyChannel: '<bot_channel>'
 }
 
 export const defaultConfig: IConfig = {
