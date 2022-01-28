@@ -1,0 +1,210 @@
+<div id="top"></div>
+<!-- PROJECT SHIELDS -->
+
+
+<!-- PROJECT LOGO -->
+  <h3 align="center">HAL9001</h3>
+
+  <p align="center">
+    A simple yet powerful tendermint based node monitoring service
+    <br />
+    <a href="https://github.com/IDEP-network/Hal9001"><strong>Explore the docs »</strong></a>
+    <br />
+    <br />
+    <a href="https://github.com/IDEP-network/Hal9001/issues">Report Bug</a>
+    ·
+    <a href="https://github.com/IDEP-network/Hal9001/issues">Request Feature</a>
+  </p>
+</div>
+
+
+
+<!-- TABLE OF CONTENTS -->
+<details>
+  <summary>Table of Contents</summary>
+  <ol>
+    <li>
+      <a href="#about-the-project">About The Project</a>
+      <ul>
+        <li><a href="#built-with">Built With</a></li>
+      </ul>
+    </li>
+    <li>
+      <a href="#getting-started">Getting Started</a>
+      <ul>
+        <li><a href="#prerequisites">Prerequisites</a></li>
+        <li><a href="#installation">Installation</a></li>
+      </ul>
+    </li>
+    <li><a href="#usage">Usage</a></li>
+    <li><a href="#roadmap">Roadmap</a></li>
+    <li><a href="#contributing">Contributing</a></li>
+    <li><a href="#license">License</a></li>
+    <li><a href="#contact">Contact</a></li>
+    <li><a href="#acknowledgments">Acknowledgments</a></li>
+  </ol>
+</details>
+
+
+
+<!-- ABOUT THE PROJECT -->
+## About The Project
+
+Hal9001 listens to Tendermints RPC over 26657 port and relays activity and important information over Discord notifying the `operator(s)` of the nodes current status. Hal is also able to listen to multiple nodes at the same time. Hal keeps his data in Redis and makes it readily available to the operator(s) via commands on Discord.
+
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+
+<!-- BUILT WITH -->
+### Built With
+
+* [Node.js](https://nodejs.org/en/)
+* [Redis](https://redis.io/)
+* [TypeScrpt](https://www.typescriptlang.org/)
+* [Discord.js](https://discord.js.org/#/)
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+
+
+<!-- GETTING STARTED -->
+## Getting Started
+
+_You need these before we begin_
+
+### Prerequisites
+
+* npm
+  ```sh
+  sudo apt install npm
+  ```
+* ts-node
+  ```sh
+  npm install ts-node -g
+  ```
+* typescript
+  ```sh
+  npm install -g typescript
+  ```
+* git
+  ```sh
+  sudo apt install git-all
+  ```
+ 
+### Installation
+
+_Lets get started_
+
+1. Clone the repo
+   ```sh
+   git clone https://github.com/IDEP-network/Hal9001.git
+   ```
+2. Change directories
+   ```sh
+   cd Hal9001/
+   ```
+3. Install NPM packages
+   ```sh
+   npm install
+   ```
+   You might need to upgrade to a newer version of node `17.2` if so start by installing NVM
+   ```sh
+   curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.2/install.sh | bash
+   ```
+   restart terminal
+   
+   upgrade node to `17.2`
+   ```sh
+   nvm install 17.2 -g
+   ```
+   
+     
+4. Configure Hal
+   ```sh
+   vim src/config.ts
+   ```
+   You will need the ip address of your node, your discord ID (which is number type and a Discord bot token of which tutorial can be found here [here](https://github.com/reactiflux/discord-irc/wiki/Creating-a-discord-bot-&-getting-a-token)
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+5. Start Hal 
+   ```sh
+   ts-node src
+   ```
+
+
+
+
+<!-- USAGE EXAMPLES -->
+## Usage
+
+* clear Redis memory
+```sh
+redis-cli FLUSHALL
+```
+
+
+<!-- ROADMAP -->
+## Planned Roadmap
+
+- [x] ~~kill Frank Poole~~
+- [ ] Add telegram notifications
+- [ ] Setup Docker
+
+See the [open issues](https://github.com/IDEP-network/Hal9001/issues) for a full list of proposed features (and known issues).
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+
+
+<!-- CONTRIBUTING -->
+## Contributing
+
+Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+
+If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
+Don't forget to give the project a star! Thanks again!
+
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+
+
+<!-- LICENSE -->
+## License
+
+Distributed under the MIT License. See `LICENSE.txt` for more information.
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+
+
+<!-- CONTACT -->
+## Contact
+
+[IDEP-Network](https://twitter.com/idep-network) - hello@IDEP.network
+
+Project Link: [https://github.com/IDEP-network/Hal9001](https://github.com/IDEP-network/Hal9001)
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+
+
+<!-- ACKNOWLEDGMENTS -->
+## Acknowledgments
+
+### reserved
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+<br />
+<br />
+<br />
+<br />
+
+_I am putting myself to the fullest possible use, which is all I think that any conscious entity can ever hope to do._
