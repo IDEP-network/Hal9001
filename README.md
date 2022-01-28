@@ -61,7 +61,7 @@ Hal9001 listens to Tendermints RPC over 26657 port and relays activity and impor
 
 * [Node.js](https://nodejs.org/en/)
 * [Redis](https://redis.io/)
-* [TypeScrpt](https://www.typescriptlang.org/)
+* [TypeScript](https://www.typescriptlang.org/)
 * [Discord.js](https://discord.js.org/#/)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
