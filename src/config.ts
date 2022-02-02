@@ -11,5 +11,6 @@ export const defaultConfig: IConfig = {
     cycleTime: 60,
     notifyCycleTime: 20,
     nodes: {},
-    operators: []
+    operators: [],
+    D2: 40
 }

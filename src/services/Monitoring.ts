@@ -63,11 +63,11 @@ export class Monitoring {
     }
 
     _compareNPeersWithBoundary(n_peer) {
-        if (n_peer > defaultConfig.n_peers) {
+        if (n_peer > defaultConfig.D2) {
             DiscordClient.instance.notifier.InfoAlert(`Number of peers (${n_peer}) is more than boundary D2`)
             notificationConfig.InfoAlert = false
             notificationConfig.MinorAlert = true
-        } else if (n_peer < defaultConfig.n_peers){
+        } else if (n_peer < defaultConfig.D2){
             DiscordClient.instance.notifier.MinorAlert(`Number of peers (${n_peer}) is less than boundary D2`)
             notificationConfig.MinorAlert = false
             notificationConfig.InfoAlert = true

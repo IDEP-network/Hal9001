@@ -5,5 +5,5 @@ export interface IConfig {
         [key in string]: string
     },
     operators: string[],
-    n_peers?: number
+    D2?: number //full_node_peer_danger_boundary
 }
