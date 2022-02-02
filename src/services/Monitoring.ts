@@ -1,10 +1,11 @@
 import fetch from "node-fetch";
 import { DiscordClient } from "../bin/Discord";
-import config from "../config";
+import { defaultConfig } from "../config";
 import { NodeException } from "../types/Monitoring/NodeException";
 import { NodePayload } from "../types/Monitoring/NodePayload";
 import Redis from "./Redis";
 import Storage from "./Storage";
+import notificationConfig from "../notificationConfig";
 
 export class Monitoring {
     constructor() {
@@ -30,6 +31,7 @@ export class Monitoring {
             }
             // @ts-ignore
             DiscordClient.instance.notifier[nodeInfo.exception](nodeInfo)
+            this._compareNPeersWithBoundary(nodeInfo?.n_peers)
             console.log(`Monitoring >> Payload from ${nodeAddress}: `, nodeInfo)
             Redis.setNodeData(nodeAddress, nodeInfo);
         }
@@ -58,5 +60,21 @@ export class Monitoring {
         }
 
         return payload;
+    }
+
+    _compareNPeersWithBoundary(n_peer) {
+        if (n_peer > defaultConfig.n_peers) {
+            DiscordClient.instance.notifier.InfoAlert(`Number of peers (${n_peer}) is more than boundary D2`)
+            notificationConfig.InfoAlert = false
+            notificationConfig.MinorAlert = true
+        } else if (n_peer < defaultConfig.n_peers){
+            DiscordClient.instance.notifier.MinorAlert(`Number of peers (${n_peer}) is less than boundary D2`)
+            notificationConfig.MinorAlert = false
+            notificationConfig.InfoAlert = true
+        } else {
+            DiscordClient.instance.notifier.InfoAlert(`Number of peers (${n_peer}) is equal to boundary D2`)
+            notificationConfig.MinorAlert = true
+            notificationConfig.InfoAlert = true
+        }
     }
 } 

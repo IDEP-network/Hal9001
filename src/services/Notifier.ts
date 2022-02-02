@@ -17,11 +17,11 @@ export class Notifier {
     }
 
     generateEmbed({
-        payload,
-        type,
-        color,
-        name
-    }: {
+                      payload,
+                      type,
+                      color,
+                      name
+                  }: {
         payload?: NodePayload,
         type: NodeException,
         color: ColorResolvable,
@@ -96,4 +96,25 @@ export class Notifier {
             payload
         }), Storage.config.operators)
     }
+
+    MinorAlert(name) {
+        if(!notificationConfig.MinorAlert) return;
+
+        this.notify(this.generateEmbed({
+            color: 'DEFAULT',
+            type: 'MinorAlert',
+            name
+        }), Storage.config.operators)
+    }
+
+    InfoAlert(name) {
+        if(!notificationConfig.InfoAlert) return;
+
+        this.notify(this.generateEmbed({
+            color: 'DEFAULT',
+            type: 'InfoAlert',
+            name
+        }), Storage.config.operators)
+    }
+
 }
