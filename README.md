@@ -75,6 +75,10 @@ _You need these before we begin_
 
 ### Prerequisites
 
+* Update your local apt package cache
+  ```sh
+  sudo apt update 
+  ```
 * npm
   ```sh
   sudo apt install npm
@@ -90,6 +94,11 @@ _You need these before we begin_
 * git
   ```sh
   sudo apt install git-all
+  ```
+* redis
+  ```sh
+  sudo apt install redis-server
+  sudo systemctl status redis
   ```
  
 ### Installation
