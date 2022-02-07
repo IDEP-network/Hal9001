@@ -5,6 +5,7 @@ import notificationConfig from "../notificationConfig";
 import { NodeException } from "../types/Monitoring/NodeException";
 import { NodePayload } from "../types/Monitoring/NodePayload";
 import Storage from "./Storage";
+import operatorConfig from "../operatorConfig";
 
 export class Notifier {
     constructor(public client: DiscordClient) {
@@ -48,13 +49,14 @@ export class Notifier {
         return embed;
     }
 
-    notify(embed: MessageEmbed, operators: string[]) {
+    notify(embed: MessageEmbed, operators: string[], onOperator: boolean = operatorConfig.OnOperator) {
         let channel = this.client.channels.resolve(config.notifyChannel);
         if(!channel.isText()) return;
+        if(!onOperator) operators = [''];
 
         channel.send({
             embeds: [embed],
-            content: `${operators.map(oper => `<@${oper}>`).join(' ')}`
+            content: `${operators.map(oper =>  `<@${oper}>`).join(' ')}`
         })
     }
 
