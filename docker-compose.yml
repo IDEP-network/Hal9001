@@ -1,0 +1,26 @@
+version: '3.4'
+services:
+  ts-node-docker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: base
+    volumes:
+      - ./src:/var/www/hal9001/app/src
+    container_name: hal9001
+    environment:
+      - REDIS_URL="redis://redis_db:6379"
+    depends_on:
+      - redis_db    
+    expose:
+      - '3000'
+    ports:
+      - '3000:3000'
+    command: ts-node src
+  redis_db:
+    image: redis
+    container_name: cache
+    volumes:
+      - ./data:/data
+    expose: 
+      - 6379
