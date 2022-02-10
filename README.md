@@ -108,8 +108,13 @@ _You need these before we begin_
   ```sh
   sudo apt-get install docker-ce docker-ce-cli containerd.io
   ```
-
-#### Installation
+* redis
+  ```sh
+  sudo apt install redis-server
+  sudo systemctl status redis
+  ```
+ 
+### Installation
 
 _Lets get started_
 
