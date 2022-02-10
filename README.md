@@ -109,8 +109,6 @@ _You need these before we begin_
   sudo apt-get install docker-ce docker-ce-cli containerd.io
   ```
 
-#### Installation
-
 _Lets get started_
 
 1. Clone the repo
