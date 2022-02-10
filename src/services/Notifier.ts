@@ -12,7 +12,7 @@ export class Notifier {
     }
 
     aliveEnter() {
-        this.generateAlert({color: 'YELLOW', type: 'aliveAlert'});
+        this.generateAlert({color: 'YELLOW', type: 'aliveAlert'}, true);
         setTimeout(this.aliveEnter.bind(this), Storage.config.notifyCycleTime * 1000)
     }
 
@@ -42,7 +42,7 @@ export class Notifier {
         return embed;
     }
 
-    notify(embed: MessageEmbed, operators: string[], onOperator: boolean = operatorConfig.onOperator) {
+    notify(embed: MessageEmbed, operators: string[], onOperator: boolean) {
         const channel = this.client.channels.resolve(connectionsConfig.notifyChannel);
         if (!channel.isText()) return;
         if (!onOperator) operators = [''];
@@ -53,7 +53,7 @@ export class Notifier {
         })
     }
 
-    generateAlert(alert: IEmbed) {
+    generateAlert(alert: IEmbed, onOperator: boolean = operatorConfig.onOperator) {
         if (!notificationConfig[alert.type]) return;
 
         this.notify(this.generateEmbed({
@@ -62,7 +62,7 @@ export class Notifier {
             payload: alert.payload,
             description: alert.description,
             nodeName: alert.nodeName
-        }), Storage.config.operators)
+        }), Storage.config.operators, onOperator)
     }
 
     // cannotAccessNodeAlert(nodeName: string) {

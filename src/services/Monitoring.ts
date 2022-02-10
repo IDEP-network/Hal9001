@@ -31,7 +31,7 @@ export class Monitoring {
                     color: 'DARK_RED',
                     type: 'cannotAccessNodeAlert',
                     nodeName: nodeName
-                })
+                }, true)
                 continue;
             }
             this._compareAmountOfPeersWithBoundary(nodeInfo?.n_peers, nodeName)
@@ -72,7 +72,7 @@ export class Monitoring {
                 type: 'infoAlert',
                 nodeName: nodeName,
                 description: AlertMessages.N_PEERSISNULL
-            })
+            }, true)
         } else {
             if (peersAmount > discordOptions.D2) {
                 DiscordClient.notifier.generateAlert({
@@ -80,7 +80,7 @@ export class Monitoring {
                     type: 'infoAlert',
                     nodeName: nodeName,
                     description: AlertMessages.N_PEERSISMORE
-                })
+                }, true)
                 notificationConfig.infoAlert = false
                 notificationConfig.minorAlert = true
             } else if (peersAmount < discordOptions.D2) {
@@ -89,7 +89,7 @@ export class Monitoring {
                     type: 'minorAlert',
                     nodeName: nodeName,
                     description: AlertMessages.N_PEERSISLESS
-                })
+                }, true)
                 notificationConfig.minorAlert = false
                 notificationConfig.infoAlert = true
             } else {
@@ -98,7 +98,7 @@ export class Monitoring {
                     type: 'infoAlert',
                     nodeName: nodeName,
                     description: AlertMessages.N_PEERSISEQUAL
-                })
+                }, true)
                 notificationConfig.minorAlert = true
                 notificationConfig.infoAlert = true
             }
