@@ -64,34 +64,4 @@ export class Notifier {
             nodeName: alert.nodeName
         }), Storage.config.operators, onOperator)
     }
-
-    // cannotAccessNodeAlert(nodeName: string) {
-    //     if(!notificationConfig.cannotAccessNodeAlert) return;
-    //
-    //     this.notify(this.generateEmbed({
-    //         color: 'DARK_RED',
-    //         type: 'cannotAccessNodeAlert',
-    //         nodeName
-    //     }), Storage.config.operators)
-    // }
-    //
-    // isCatchingUpAlert(payload: INodePayload) {
-    //     if(!notificationConfig.isCatchingUpAlert) return;
-    //
-    //     this.notify(this.generateEmbed({
-    //         color: 'AQUA',
-    //         type: 'isCatchingUpAlert',
-    //         payload
-    //     }), Storage.config.operators)
-    // }
-    //
-    // isNotCatchingUp(payload: INodePayload) {
-    //     if(!notificationConfig.isNotCatchingUp) return;
-    //
-    //     this.notify(this.generateEmbed({
-    //         color: 'YELLOW',
-    //         type: 'isNotCatchingUp',
-    //         payload
-    //     }), Storage.config.operators)
-    // }
 }
