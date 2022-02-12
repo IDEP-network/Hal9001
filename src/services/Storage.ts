@@ -1,5 +1,4 @@
-import { IConfig } from "../interfaces/IConfig";
-import Redis from "./Redis";
+import {IConfig} from "../interfaces/IConfig";
 
 class Storage {
     private _config: IConfig;

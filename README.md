@@ -3,7 +3,7 @@
 
 
 <!-- PROJECT LOGO -->
-  <h3 align="center">HAL9001</h3>
+<h3 align="center">HAL9001</h3>
 
   <p align="center">
     A simple yet powerful tendermint based node monitoring service
@@ -15,7 +15,6 @@
     ·
     <a href="https://github.com/IDEP-network/Hal9001/issues">Request Feature</a>
   </p>
-</div>
 
 
 
@@ -48,15 +47,19 @@
 
 
 <!-- ABOUT THE PROJECT -->
+
 ## About The Project
 
-Hal9001 listens to Tendermints RPC over 26657 port and relays activity and important information over Discord notifying the `operator(s)` of the nodes current status. Hal is also able to listen to multiple nodes at the same time. Hal keeps his data in Redis and makes it readily available to the operator(s) via commands on Discord.
+Hal9001 listens to Tendermints RPC over 26657 port and relays activity and important information over Discord notifying
+the `operator(s)` of the nodes current status. Hal is also able to listen to multiple nodes at the same time. Hal keeps
+his data in Redis and makes it readily available to the operator(s) via commands on Discord.
 
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 
 <!-- BUILT WITH -->
+
 ### Built With
 
 * [Node.js](https://nodejs.org/en/)
@@ -69,19 +72,20 @@ Hal9001 listens to Tendermints RPC over 26657 port and relays activity and impor
 
 
 <!-- GETTING STARTED -->
+
 ## Getting Started
 
 _You need these before we begin_
 
 ### Prerequisites
 
-* Update your local apt package cache
+* update local package cache
   ```sh
-  sudo apt update 
+  sudo apt-get update 
   ```
 * npm
   ```sh
-  sudo apt install npm
+  sudo apt-get install npm
   ```
 * ts-node
   ```sh
@@ -93,14 +97,18 @@ _You need these before we begin_
   ```
 * git
   ```sh
-  sudo apt install git-all
+  sudo apt-get install git-all
   ```
 * redis
   ```sh
-  sudo apt install redis-server
+  sudo apt-get install redis-server
   sudo systemctl status redis
   ```
- 
+* docker
+  ```sh
+  sudo apt-get install docker-ce docker-ce-cli containerd.io
+  ```
+
 ### Installation
 
 _Lets get started_
@@ -122,58 +130,77 @@ _Lets get started_
    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.2/install.sh | bash
    ```
    restart terminal
-   
+
    upgrade node to `17.2`
    ```sh
    nvm install 17.2 -g
    ```
-   
-     
+
 4. Configure Hal
+
+* copy content from **.env.example** and populate the required parameters in **.env**
+    ```sh
+    cp .env.example .env
+    ```
+
+* populate the required parameters in **src/config.ts**
    ```sh
    vim src/config.ts
    ```
-   You will need the ip address of your node, your discord ID (which is number type and a Discord bot token of which tutorial can be found here [here](https://github.com/reactiflux/discord-irc/wiki/Creating-a-discord-bot-&-getting-a-token)
+
+  You will need the ip address of your node, your discord ID (which is number type and a Discord bot token of which
+  tutorial can be found
+  here [here](https://github.com/reactiflux/discord-irc/wiki/Creating-a-discord-bot-&-getting-a-token)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
-5. Start Hal 
+5. Start Hal
    ```sh
    ts-node src
    ```
 
-
-
-
 <!-- USAGE EXAMPLES -->
+
+## Usage with Docker
+
+* run app
+
+   ```sh
+   docker-compose up -d
+   ```
+
 ## Usage
 
 * clear Redis memory
+
 ```sh
 redis-cli FLUSHALL
 ```
 
-
 <!-- ROADMAP -->
+
 ## Planned Roadmap
 
 - [x] ~~kill Frank Poole~~
 - [ ] Add telegram notifications
 - [ ] Setup Docker
 
-See the [open issues](https://github.com/IDEP-network/Hal9001/issues) for a full list of proposed features (and known issues).
+See the [open issues](https://github.com/IDEP-network/Hal9001/issues) for a full list of proposed features (and known
+issues).
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 
 
 <!-- CONTRIBUTING -->
+
 ## Contributing
 
-Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any
+contributions you make are **greatly appreciated**.
 
-If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
-Don't forget to give the project a star! Thanks again!
+If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also
+simply open an issue with the tag "enhancement". Don't forget to give the project a star! Thanks again!
 
 1. Fork the Project
 2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
@@ -186,6 +213,7 @@ Don't forget to give the project a star! Thanks again!
 
 
 <!-- LICENSE -->
+
 ## License
 
 Distributed under the MIT License. See `LICENSE.txt` for more information.
@@ -195,6 +223,7 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 
 <!-- CONTACT -->
+
 ## Contact
 
 [IDEP-Network](https://twitter.com/idep-network) - hello@IDEP.network
@@ -206,6 +235,7 @@ Project Link: [https://github.com/IDEP-network/Hal9001](https://github.com/IDEP-
 
 
 <!-- ACKNOWLEDGMENTS -->
+
 ## Acknowledgments
 
 ### reserved

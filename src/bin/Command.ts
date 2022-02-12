@@ -1,16 +1,11 @@
-import { Message, PermissionResolvable } from "discord.js";
-import { normalize } from "path";
-import { DiscordClient } from "./Discord";
+import {Message} from "discord.js";
+import {DiscordClient} from "./Discord";
+import {ICommandOptions} from "../interfaces/ICommandOption";
 
 export class BaseCommand {
-  constructor(public options: ICommandOptions) {
-    
-  }
+    constructor(public options: ICommandOptions) {
+    }
 
-  async run(client: DiscordClient, message: Message, args: string[]): Promise<any> {}
-}
-
-export interface ICommandOptions {
-  name: string | null,
-  aliases: string[]
+    async run(client: DiscordClient, message: Message, args: string[]): Promise<any> {
+    }
 }

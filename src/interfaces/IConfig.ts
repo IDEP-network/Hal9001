@@ -4,5 +4,6 @@ export interface IConfig {
     nodes: {
         [key in string]: string
     },
-    operators: string[]
+    operators: string[],
+    D2?: number
 }

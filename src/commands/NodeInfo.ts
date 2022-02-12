@@ -1,9 +1,9 @@
-import { Message, MessageEmbed } from "discord.js"
-import { BaseCommand } from "../bin/Command"
-import { DiscordClient } from "../bin/Discord"
-import Redis from "../services/Redis"
-import Storage from "../services/Storage"
-import { NodePayload } from "../types/Monitoring/NodePayload"
+import {Message, MessageEmbed} from 'discord.js'
+import {BaseCommand} from '../bin/Command'
+import {DiscordClient} from '../bin/Discord'
+import Redis from '../services/Redis'
+import Storage from '../services/Storage'
+import {INodePayload} from '../interfaces/INodePayload'
 
 export default class NodeInfoCommand extends BaseCommand {
     constructor() {
@@ -16,7 +16,7 @@ export default class NodeInfoCommand extends BaseCommand {
     async run(client: DiscordClient, message: Message, args: string[]) {
         // const nodeInfo = Redis.getNodeData()
         const availableNodes = Object.keys(Storage.config.nodes);
-        if(!availableNodes.includes(args[0])) {
+        if (!availableNodes.includes(args[0])) {
             return message.channel.send({
                 embeds: [
                     new MessageEmbed()
@@ -28,11 +28,11 @@ export default class NodeInfoCommand extends BaseCommand {
         }
 
         const nodeAddress = Storage.config.nodes[args[0]];
-        const nodeInfo: NodePayload = await Redis.getNodeData(nodeAddress);
+        const nodeInfo: INodePayload = await Redis.getNodeData(nodeAddress);
 
-        if(!nodeInfo) return message.reply({
+        if (!nodeInfo) return message.reply({
             embeds: [
-                 new MessageEmbed()
+                new MessageEmbed()
                     .setColor('RED')
                     .setDescription(`Node with address \` ${nodeAddress} \` never be scanned`)
             ]
@@ -45,7 +45,7 @@ export default class NodeInfoCommand extends BaseCommand {
                 **Catching Up**: \` ${nodeInfo.catching_up} \` 
                 **Node Peers**: \` ${nodeInfo.n_peers} \` 
                 **Voting Power**: \` ${nodeInfo.voting_power} \` 
-                **Status**: \` ${nodeInfo.exception || "no"} \` 
+                **Status**: \` ${nodeInfo.exception || 'no'} \` 
             `)
 
         message.reply({
