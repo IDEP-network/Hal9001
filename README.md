@@ -79,6 +79,15 @@ _You need these before we begin_
 
 ### Prerequisites
 
+#### with Docker
+
+* docker
+  ```sh
+  sudo apt-get install docker-ce docker-ce-cli containerd.io
+  ```
+
+#### without Docker
+
 * update local package cache
   ```sh
   sudo apt-get update 
@@ -104,20 +113,14 @@ _You need these before we begin_
   sudo apt-get install redis-server
   sudo systemctl status redis
   ```
-* docker
-  ```sh
-  sudo apt-get install docker-ce docker-ce-cli containerd.io
-  ```
 
 ### Installation
-
-_Lets get started_
 
 1. Clone the repo
    ```sh
    git clone https://github.com/IDEP-network/Hal9001.git
    ```
-2. Change directories
+2. Change the directory
    ```sh
    cd Hal9001/
    ```
@@ -125,57 +128,103 @@ _Lets get started_
    ```sh
    npm install
    ```
-   You might need to upgrade to a newer version of node `17.2` if so start by installing NVM
+   You might need to upgrade to a newer version of node `17.2` if so start by installing **NVM**
+   <details>
+   <ul>
+   <li>
+
    ```sh
    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.2/install.sh | bash
    ```
-   restart terminal
+   </li>
+   <li>
 
-   upgrade node to `17.2`
+   After restarting the terminal upgrade node to  `17.2`
    ```sh
    nvm install 17.2 -g
    ```
+   </li>
+   </ul>
+   </details>
+
 
 4. Configure Hal
 
-* copy content from **.env.example** and populate the required parameters in **.env**
+* copy content from **.env.example** and fill in the required parameters in **.env**
     ```sh
     cp .env.example .env
     ```
 
-* populate the required parameters in **src/config.ts**
+* fill in the preferred parameters in **src/config.ts**
    ```sh
    vim src/config.ts
    ```
 
-  You will need the ip address of your node, your discord ID (which is number type and a Discord bot token of which
-  tutorial can be found
-  here [here](https://github.com/reactiflux/discord-irc/wiki/Creating-a-discord-bot-&-getting-a-token)
+  You will need:
+    * ip address of your node
+    * your discord ID (which type is number. Discord tutorial can be found
+      here [here](https://github.com/reactiflux/discord-irc/wiki/Creating-a-discord-bot-&-getting-a-token))
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
-5. Start Hal
+5. Clear Redis memory
+
+    ```sh
+    redis-cli FLUSHALL
+    ```
+6. Start Hal
+
    ```sh
    ts-node src
    ```
+   or
+    ```sh
+   npm run start
+   ```
 
-<!-- USAGE EXAMPLES -->
+### Run with Docker
 
-## Usage with Docker
-
-* run app
+As well as you can install and run project with Docker
 
    ```sh
    docker-compose up -d
    ```
 
-## Usage
+### Usage
 
-* clear Redis memory
+command structure `<prefix><command-name> <arg..1> <arg..2>`
 
-```sh
-redis-cli FLUSHALL
-```
+command example     `!config operators view`
+
+- help
+  ```sh
+  help
+  ```
+
+- operators
+    ```sh
+    config operators add <@mention>
+    config operators remove <@mention>
+    config operators view
+    ```
+
+- nodes
+    ```sh
+    config nodes add <node_address> <?name>
+    config nodes remove <name>
+    config nodes view
+    ```
+
+- cycleTime
+    ```sh
+    config cycleTime set <time in seconds>
+    config cycleTime view
+    ```
+- notifyCycleTime
+  ```sh
+  config notifyCycleTime set <time in seconds>
+  config notifyCycleTime view
+  ```
 
 <!-- ROADMAP -->
 
