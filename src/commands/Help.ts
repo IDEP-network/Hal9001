@@ -10,7 +10,7 @@ export default class HelpCommand extends BaseCommand {
         })
     }
 
-    async run(client: DiscordClient, message: Message, args: string[]) {
+    run(client: DiscordClient, message: Message, args: string[]) {
         return message.reply({
             embeds: [new MessageEmbed()
                 .setColor('GREEN')
