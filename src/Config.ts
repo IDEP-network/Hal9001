@@ -22,7 +22,7 @@ export const discordOptions: IConfig = {
 export const telegramConfig = {
     telegramToken: process.env.TELEGRAMTOKEN,
     telegramChannel: process.env.TELEGRAMCHANNEL,
-    telegramMentioneds: ['ArenGr', 'karen111_bot']
+    telegramMentioneds: [ 'karen111_bot']
 }
 
 export const botStatus = {
