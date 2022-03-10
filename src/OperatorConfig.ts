@@ -1,3 +1,7 @@
-export default {
-    onOperator: true,
+export const DiscordOperators = {
+    onOperator: true
+}
+
+export const TelegramMentioneds = {
+    switch: true
 }

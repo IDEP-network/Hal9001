@@ -1,9 +1,9 @@
-import {RedisCommandArgument} from "@node-redis/client/dist/lib/commands";
-import {createClient} from "redis";
-import {connectionsConfig, discordOptions} from "../Config";
-import {IConfig} from "../interfaces/IConfig";
-import {INodePayload} from "../interfaces/INodePayload";
-import Storage from "./Storage";
+import {RedisCommandArgument} from '@node-redis/client/dist/lib/commands';
+import {createClient} from 'redis';
+import {connectionsConfig, discordOptions} from '../Config';
+import {IConfig} from '../interfaces/IConfig';
+import {INodePayload} from '../interfaces/INodePayload';
+import Storage from './Storage';
 
 class Redis {
     private _connection = createClient({

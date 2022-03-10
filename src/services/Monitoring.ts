@@ -35,6 +35,8 @@ export class Monitoring {
                 continue;
             }
             this._compareAmountOfPeersWithBoundary(nodeInfo?.n_peers, nodeName)
+            // let telBot = new Telegram(telegramConfig.telegramToken)
+            // telBot.sendMsg();
             console.log(`Monitoring >> Payload from ${nodeAddress}: `, nodeInfo)
             Redis.setNodeData(nodeAddress, nodeInfo);
         }

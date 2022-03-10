@@ -1,8 +1,9 @@
 require('fix-esm').register()
-import { DiscordClient } from "./bin/Discord";
-import { connectionsConfig } from "./Config";
-import { Monitoring } from "./services/Monitoring";
-import Redis from "./services/Redis"
+import {TelegramNotifier} from './services/TelegramNotifier';
+import Redis from './services/Redis'
+import {connectionsConfig} from './Config';
+import {Monitoring} from './services/Monitoring';
+import {DiscordClient} from './bin/Discord';
 
 
 process.on('uncaughtException', (e) => {
@@ -15,22 +16,11 @@ process.on('unhandledRejection', (e) => {
 
 (async () => {
     await Redis.connect();
-    await Redis.loadConfig()
+    await Redis.loadConfig();
     const client = new DiscordClient();
     client.login(connectionsConfig.discordToken);
     client.on('ready', () => {
         new Monitoring()
     })
+    new TelegramNotifier();
 })()
-
-
-/*
-
-// this is what i meant
-// OK I THINKITS OK
-tHANKS , BUT CAN YOU REVIEW CODE PLEASE?
-//  SURE, OK, THAK
-//  BUT DON'T YOU PREFER LIVEEE EHARE /
-you mean github?
-check discord
-*/

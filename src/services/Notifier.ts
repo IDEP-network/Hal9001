@@ -3,7 +3,7 @@ import {DiscordClient} from '../bin/Discord';
 import {connectionsConfig} from '../Config';
 import notificationConfig from '../NotificationConfig';
 import Storage from './Storage';
-import operatorConfig from '../OperatorConfig';
+import {DiscordOperators} from '../OperatorConfig';
 import {IEmbed} from '../interfaces/IEmbed';
 
 export class Notifier {
@@ -53,7 +53,7 @@ export class Notifier {
         })
     }
 
-    generateAlert(alert: IEmbed, onOperator: boolean = operatorConfig.onOperator) {
+    generateAlert(alert: IEmbed, onOperator: boolean = DiscordOperators.onOperator) {
         if (!notificationConfig[alert.type]) return;
 
         this.notify(this.generateEmbed({
