@@ -1,14 +1,16 @@
-import {TNodeException} from '../ts/types/TNodeException';
-import {INodePayload} from '../ts/interfaces/INodePayload';
 import fetch from 'node-fetch';
-import {DiscordClient} from '../bin/Discord';
-import {ALERTS_MESSAGES} from '../ts/constants/alertsMessages';
-import {CONFIGS} from '../configs/configs';
-import {ALERTS_STATES} from '../ts/constants/alertsStates';
-import {TelegramClient} from '../bin/Telegram';
 
-class MonitoringHelper {
-    async getNodeInfo(nodeAddress: string, nodeName: string): Promise<TNodeException | INodePayload> {
+import {TypeNodeException} from '../ts/types/type.nodeException';
+import {InterfaceNodePayload} from '../ts/interfaces/interface.nodePayload';
+import {DiscordClient} from '../bin/bin.discord';
+import {ALERTS_MESSAGES} from '../ts/constants/constant.alertsMessages';
+import {CONFIGS} from '../configs/configs';
+import {ALERTS_STATES} from '../ts/constants/constant.alertsStates';
+import {TelegramClient} from '../bin/bin.telegram';
+
+class HelperMonitoring {
+
+    async getNodeInfo(nodeAddress: string, nodeName: string): Promise<TypeNodeException | InterfaceNodePayload> {
         const apiUrl = `http://${nodeAddress}`;
         const response: any = await fetch(`${apiUrl}/status`).then(res => res.json()).catch(e => (null));
         if (!response) return 'cannotAccessNodeAlert';
@@ -17,7 +19,7 @@ class MonitoringHelper {
 
         const catching_up = response.result.sync_info.catching_up;
 
-        const payload: INodePayload = {
+        const payload: InterfaceNodePayload = {
             catching_up,
             n_peers: responseNetInfo.result.n_peers,
             voting_power: response.result.validator_info.voting_power,
@@ -94,4 +96,4 @@ class MonitoringHelper {
     }
 }
 
-export default new MonitoringHelper();
+export default new HelperMonitoring();

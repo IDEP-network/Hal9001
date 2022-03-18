@@ -1,11 +1,11 @@
-import {TelegramClient} from '../bin/Telegram';
-import Storage from './storage.service';
+import {TelegramClient} from '../bin/bin.telegram';
+import ServiceStorage from './service.storage';
 import {CONFIGS, TELEGRAM_CONFIGS} from '../configs/configs';
-import {IEmbed} from '../ts/interfaces/IEmbed';
-import TelegramHelper from '../helpers/telegram.helper';
-import {ALERTS_STATES} from '../ts/constants/alertsStates';
+import {InterfaceEmbed} from '../ts/interfaces/interface.embed';
+import TelegramHelper from '../helpers/helper.telegram';
+import {ALERTS_STATES} from '../ts/constants/constant.alertsStates';
 
-export class TelegramNotifierService {
+export class ServiceTelegramNotifier {
 
     constructor(public client: TelegramClient) {
         this.aliveStart()
@@ -13,10 +13,10 @@ export class TelegramNotifierService {
 
     aliveStart() {
         this.sendAlert({'type': 'aliveAlert'})
-        setTimeout(() => this.aliveStart(), Storage.config.notifyCycleTime * 1000)
+        setTimeout(() => this.aliveStart(), ServiceStorage.config.notifyCycleTime * 1000)
     }
 
-    generateMsg({type, nodeName, payload, description}: IEmbed, mentioneds: string[]) {
+    generateMsg({type, nodeName, payload, description}: InterfaceEmbed, mentioneds: string[]) {
 
         TelegramHelper.resetContent();
 
@@ -42,13 +42,13 @@ export class TelegramNotifierService {
         return TelegramHelper.getContent()
     }
 
-    sendAlert(alert: IEmbed) {
+    sendAlert(alert: InterfaceEmbed) {
         if (!ALERTS_STATES[alert.type]) return;
         this.client.telegram.sendMessage(TELEGRAM_CONFIGS.CHANNEL, this.generateMsg({
             type: alert.type,
             nodeName: alert.nodeName,
             description: alert.description,
             payload: alert.payload
-        }, Storage.config.telegramOperators), {parse_mode: 'HTML'});
+        }, ServiceStorage.config.telegramOperators), {parse_mode: 'HTML'});
     }
 }

@@ -1,11 +1,12 @@
 import {Message} from 'discord.js'
-import {BaseCommand} from '../bin/Command'
-import Redis from '../services/redis.service'
-import Storage from '../services/storage.service'
-import {INodePayload} from '../ts/interfaces/INodePayload';
-import {TelegramClient} from '../bin/Telegram';
 
-export default class NodeInfoTelegram extends BaseCommand {
+import {BaseCommand} from '../bin/bin.command'
+import ServiceRedis from '../services/service.redis'
+import ServiceStorage from '../services/service.storage'
+import {InterfaceNodePayload} from '../ts/interfaces/interface.nodePayload';
+import {TelegramClient} from '../bin/bin.telegram';
+
+export default class CommandTelegramNodeInfo extends BaseCommand {
     constructor() {
         super({
             name: 'node_info',
@@ -14,7 +15,7 @@ export default class NodeInfoTelegram extends BaseCommand {
     }
 
     async run(client: TelegramClient, message: Message, args: string[]) {
-        const availableNodes = Object.keys(Storage.config.nodes);
+        const availableNodes = Object.keys(ServiceStorage.config.nodes);
         if (!availableNodes.includes(args[0])) {
             // @ts-ignore
             return TelegramClient.telegramNotifier.sendAlert({
@@ -23,8 +24,8 @@ export default class NodeInfoTelegram extends BaseCommand {
             });
         }
 
-        const nodeAddress = Storage.config.nodes[args[0]];
-        const nodeInfo: INodePayload = await Redis.getNodeData(nodeAddress);
+        const nodeAddress = ServiceStorage.config.nodes[args[0]];
+        const nodeInfo: InterfaceNodePayload = await ServiceRedis.getNodeData(nodeAddress);
 
         if (!nodeInfo) return TelegramClient.telegramNotifier.sendAlert({
             type: 'infoAlert',

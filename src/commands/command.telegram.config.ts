@@ -1,10 +1,11 @@
 import {v4} from 'uuid'
-import {BaseCommand} from '../bin/Command'
-import Redis from '../services/redis.service'
-import Storage from '../services/storage.service'
-import {TelegramClient} from '../bin/Telegram';
 
-export default class ConfigTelegram extends BaseCommand {
+import {BaseCommand} from '../bin/bin.command'
+import ServiceRedis from '../services/service.redis'
+import ServiceStorage from '../services/service.storage'
+import {TelegramClient} from '../bin/bin.telegram';
+
+export default class CommandTelegramConfig extends BaseCommand {
     constructor() {
         super({
             name: 'config',
@@ -35,16 +36,16 @@ export default class ConfigTelegram extends BaseCommand {
                 `
         });
 
-        const config = Storage.config;
+        const config = ServiceStorage.config;
 
         // key [action] value
 
         if (args[1] == 'view' && args.length == 2) {
-            let value = Storage.config[args[0]];
+            let value = ServiceStorage.config[args[0]];
             if (!value) value = 'Key not found'
             console.log(value)
             if (args[0] == 'telegramOperators') {
-                value = value.map(val => `<${val}>`).join(', ')
+                value = value.map(val => `${val}`).join(', ')
             }
             if (args[0] == 'nodes') {
                 value = Object.keys(value).map(key => `**${key}**: ${value[key]}`).join('\n')
@@ -55,16 +56,6 @@ export default class ConfigTelegram extends BaseCommand {
                             ${value}
                         `
             })
-            // message.channel.send({
-            //     embeds: [
-            //         new MessageEmbed()
-            //             .setColor('YELLOW')
-            //             .setTitle(`View - ${args[0]}`)
-            //             .setDescription(`
-            //                 ${value}
-            //             `)
-            //     ]
-            // })
         }
 
         const action = args[1];
@@ -96,10 +87,10 @@ export default class ConfigTelegram extends BaseCommand {
                 }
                 if (action == 'remove') {
                     const target = args[2]
-                    let node = Storage.config.nodes[target];
+                    let node = ServiceStorage.config.nodes[target];
                     if (!node) return message.reply('Invalid node');
                     delete config.nodes[target];
-                    Redis.removeNode(target)
+                    ServiceRedis.removeNode(target)
                     description = description + `\n  **${node}** (\`${target}\`) removed!`
                 }
                 break;
@@ -125,7 +116,7 @@ export default class ConfigTelegram extends BaseCommand {
 
         console.log(config);
 
-        Storage.config = config;
-        Redis.writeConfig(config);
+        ServiceStorage.config = config;
+        ServiceRedis.writeConfig(config);
     }
 }

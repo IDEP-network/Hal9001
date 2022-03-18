@@ -1,23 +1,23 @@
-import {DiscordClient} from '../bin/Discord';
-import Redis from './redis.service';
-import Storage from './storage.service';
-import MonitoringHelper from '../helpers/monitoring.helper';
-import {TelegramClient} from '../bin/Telegram';
+import {DiscordClient} from '../bin/bin.discord';
+import ServiceRedis from './service.redis';
+import ServiceStorage from './service.storage';
+import MonitoringHelper from '../helpers/helper.monitoring';
+import {TelegramClient} from '../bin/bin.telegram';
 
-export class MonitoringService {
+export class ServiceMonitoring {
     constructor() {
         this.cycleTimeout();
     }
 
     cycleTimeout() {
-        console.log(`Monitoring >> Cycle is processed, the next cycle through ${Storage.config.cycleTime}`);
+        console.log(`Monitoring >> Cycle is processed, the next cycle through ${ServiceStorage.config.cycleTime}`);
         this.monitoringStart();
-        setTimeout(() => this.cycleTimeout(), Storage.config.cycleTime * 1000)
+        setTimeout(() => this.cycleTimeout(), ServiceStorage.config.cycleTime * 1000)
     }
 
     async monitoringStart() {
         console.log(`Monitoring >> Cycle entered`);
-        const nodes = await Redis.getNodes();
+        const nodes = await ServiceRedis.getNodes();
         for (const nodeName in nodes) {
             const nodeAddress = nodes[nodeName];
             const nodeInfo = await MonitoringHelper.getNodeInfo(nodeAddress, nodeName);
@@ -36,7 +36,7 @@ export class MonitoringService {
             // let telBot = new Telegram(telegramConfig.telegramToken)
             // telBot.sendMsg();
             console.log(`Monitoring >> Payload from ${nodeAddress}: `, nodeInfo)
-            Redis.setNodeData(nodeAddress, nodeInfo);
+            ServiceRedis.setNodeData(nodeAddress, nodeInfo);
         }
     }
 } 

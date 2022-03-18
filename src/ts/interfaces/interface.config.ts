@@ -1,4 +1,4 @@
-export interface IConfig {
+export interface InterfaceConfig {
     cycleTime?: number,
     notifyCycleTime?: number,
     nodes?: {

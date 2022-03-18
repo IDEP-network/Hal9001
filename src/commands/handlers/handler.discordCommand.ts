@@ -1,11 +1,12 @@
-import {Collection} from 'discord.js';
 import path from 'path';
 import {promisify} from 'util';
-import {BaseCommand} from '../bin/Command';
 import glob from 'glob';
-import {DiscordClient} from '../bin/Discord';
+import {Collection} from 'discord.js';
 
-export class DiscordCommandHandler extends Collection<string, BaseCommand> {
+import {BaseCommand} from '../../bin/bin.command';
+import {DiscordClient} from '../../bin/bin.discord';
+
+export class HandlerDiscordCommand extends Collection<string, BaseCommand> {
     public aliases: Collection<string, string> = new Collection<string, string>();
 
     constructor(public client: DiscordClient) {
@@ -14,7 +15,7 @@ export class DiscordCommandHandler extends Collection<string, BaseCommand> {
 
     async scan() {
         const pathName = path.normalize(__dirname + '/../commands');
-        const commandFiles = await promisify(glob)(pathName + '/**/*.discord.{ts,js}');
+        const commandFiles = await promisify(glob)(pathName + '/command.discord.*.{ts,js}');
         commandFiles.forEach(commandPath => this.register.bind(this, commandPath)());
     }
 

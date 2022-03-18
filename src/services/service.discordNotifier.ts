@@ -1,22 +1,23 @@
 import {MessageEmbed} from 'discord.js';
-import {DiscordClient} from '../bin/Discord';
-import Storage from './storage.service';
-import {IEmbed} from "../ts/interfaces/IEmbed";
+
+import {DiscordClient} from '../bin/bin.discord';
+import ServiceStorage from './service.storage';
+import {InterfaceEmbed} from "../ts/interfaces/interface.embed";
 import {DISCORD_CONFIGS} from "../configs/configs";
-import {ALERTS_STATES} from "../ts/constants/alertsStates";
+import {ALERTS_STATES} from "../ts/constants/constant.alertsStates";
 
 
-export class DiscordNotifierService {
+export class ServiceDiscordNotifier {
     constructor(public client: DiscordClient) {
         this.aliveEnter.bind(this)()
     }
 
     aliveEnter() {
         this.generateAlert({color: 'YELLOW', type: 'aliveAlert'}, true);
-        setTimeout(this.aliveEnter.bind(this), Storage.config.notifyCycleTime * 1000)
+        setTimeout(this.aliveEnter.bind(this), ServiceStorage.config.notifyCycleTime * 1000)
     }
 
-    generateEmbed({payload, type, color, nodeName, description}: IEmbed) {
+    generateEmbed({payload, type, color, nodeName, description}: InterfaceEmbed) {
         const embed = new MessageEmbed()
             .setColor(color)
             .setTitle(`Alert -> ${type.replace('Alert', '')}`);
@@ -55,7 +56,7 @@ export class DiscordNotifierService {
         })
     }
 
-    generateAlert(alert: IEmbed, onOperator: boolean = true) {
+    generateAlert(alert: InterfaceEmbed, onOperator: boolean = true) {
         if (!ALERTS_STATES[alert.type]) return;
 
         this.notify(this.generateEmbed({
@@ -64,6 +65,6 @@ export class DiscordNotifierService {
             payload: alert.payload,
             description: alert.description,
             nodeName: alert.nodeName
-        }), Storage.config.discordOperators, onOperator)
+        }), ServiceStorage.config.discordOperators, onOperator)
     }
 }

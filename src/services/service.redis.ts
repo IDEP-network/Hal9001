@@ -1,11 +1,13 @@
 import {RedisCommandArgument} from '@node-redis/client/dist/lib/commands';
 import {createClient} from 'redis';
-import Storage from './storage.service';
-import {CONFIGS, REDIS_CONFIGS} from "../configs/configs";
-import {IConfig} from "../ts/interfaces/IConfig";
-import {INodePayload} from "../ts/interfaces/INodePayload";
 
-class RedisService {
+import ServiceStorage from './service.storage';
+import {CONFIGS, REDIS_CONFIGS} from "../configs/configs";
+import {InterfaceConfig} from "../ts/interfaces/interface.config";
+import {InterfaceNodePayload} from "../ts/interfaces/interface.nodePayload";
+
+class ServiceRedis {
+
     private _connection = createClient({
         url: REDIS_CONFIGS.URL
     });
@@ -13,11 +15,11 @@ class RedisService {
     constructor() {
         // @ts-ignore
         this._connection.on('error', this.#onError.bind(this))
-        this._connection.on('connect', () => console.log('Redis >> Connected'))
+        this._connection.on('connect', () => console.log('ServiceRedis >> Connected'))
     }
 
     #onError(err) {
-        console.error(`Redis >> ${err}`);
+        console.error(`ServiceRedis >> ${err}`);
         process.exit();
     }
 
@@ -26,11 +28,11 @@ class RedisService {
     }
 
     async loadConfig() {
-        console.log('Redis >> Loading config')
-        const config: IConfig = CONFIGS;
+        console.log('ServiceRedis >> Loading config')
+        const config: InterfaceConfig = CONFIGS;
         await this._connection.hGetAll('cfg').then((res) => {
             if (Object.keys(res).length == 0) {
-                console.log(`Storage >> Empty config, overwriting with default`)
+                console.log(`ServiceStorage >> Empty config, overwriting with default`)
                 return this.writeConfig(CONFIGS)
             }
 
@@ -53,12 +55,12 @@ class RedisService {
             }
         });
 
-        console.log('Redis >> Config loaded');
-        Storage.config = config;
+        console.log('ServiceRedis >> Config loaded');
+        ServiceStorage.config = config;
     }
 
-    writeConfig(config: Partial<IConfig>) {
-        console.log(`Redis >> Updating config`);
+    writeConfig(config: Partial<InterfaceConfig>) {
+        console.log(`ServiceRedis >> Updating config`);
         Object.keys(config).forEach(key => {
             let value = config[key];
             if (Array.isArray(value)) value = value.join(', ');
@@ -68,13 +70,13 @@ class RedisService {
                     const nodeAddress = value[nodeName];
                     this._connection.hSet('node', nodeName, nodeAddress)
                         .then(() => {
-                            console.log(`Redis >> updated node ${nodeName}: ${nodeAddress}`)
+                            console.log(`ServiceRedis >> updated node ${nodeName}: ${nodeAddress}`)
                         })
                 })
             } else {
                 this._connection.hSet('cfg', key, value)
                     .then(() => {
-                        console.log(`Redis >> Updated ${key}: ${value}`)
+                        console.log(`ServiceRedis >> Updated ${key}: ${value}`)
                     })
             }
         })
@@ -88,7 +90,7 @@ class RedisService {
         return this._connection.hGetAll('node');
     }
 
-    setNodeData(nodeAddress: string, payload: INodePayload) {
+    setNodeData(nodeAddress: string, payload: InterfaceNodePayload) {
         Object.keys(payload).forEach(key => {
             let value = payload[key];
             if (['name', 'address'].includes(key)) return;
@@ -106,4 +108,4 @@ class RedisService {
     }
 }
 
-export default new RedisService();
+export default new ServiceRedis();

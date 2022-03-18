@@ -1,15 +1,13 @@
-import {Collection} from 'discord.js';
-import {DiscordClient} from '../bin/Discord';
 import path from 'path';
 import glob from 'glob';
 import {promisify} from 'util';
-import {BaseCommand} from '../bin/Command';
-import {TelegramClient} from '../bin/Telegram';
 
-export class TelegramCommandHandler {
+import {BaseCommand} from '../../bin/bin.command';
+import {TelegramClient} from '../../bin/bin.telegram';
+
+export class HandlerTelegramCommand {
+
     public store;
-
-    // public aliases: Collection<string, string> = new Collection<string, string>();
 
     constructor(public client: TelegramClient) {
         this.store = new Map();
@@ -17,8 +15,7 @@ export class TelegramCommandHandler {
 
     async scan() {
         const pathName = path.normalize(__dirname + '/../commands');
-        const commandFiles = await promisify(glob)(pathName + '/**/*.telegram.{ts,js}');
-        console.log(commandFiles, "filessssss")
+        const commandFiles = await promisify(glob)(pathName + '/command.telegram.*.{ts,js}');
         commandFiles.forEach(commandPath => this.register.bind(this, commandPath)());
     }
 

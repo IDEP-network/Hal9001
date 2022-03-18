@@ -1,13 +1,14 @@
 import {Telegraf, Context} from 'telegraf';
-import {TelegramNotifierService} from '../services/telegramNotifier.service';
+
+import {ServiceTelegramNotifier} from '../services/service.telegramNotifier';
 import {TELEGRAM_CONFIGS} from '../configs/configs';
-import {TelegramCommandHandler} from '../handlers/telegramCommand.handler';
-import StorageService from '../services/storage.service';
+import {HandlerTelegramCommand} from '../commands/handlers/handler.telegramCommand';
+import StorageService from '../services/service.storage';
 
 export class TelegramClient extends Telegraf {
 
-    public static telegramNotifier: TelegramNotifierService;
-    public static telegramCommandHandler: TelegramCommandHandler;
+    public static telegramNotifier: ServiceTelegramNotifier;
+    public static telegramCommandHandler: HandlerTelegramCommand;
 
     constructor(token: string) {
         if (token === undefined) {
@@ -19,8 +20,8 @@ export class TelegramClient extends Telegraf {
 
     onReady() {
         console.log(`Telegram >> Logged as ${this.botInfo.username}`);
-        TelegramClient.telegramNotifier = new TelegramNotifierService(this);
-        TelegramClient.telegramCommandHandler = new TelegramCommandHandler(this);
+        TelegramClient.telegramNotifier = new ServiceTelegramNotifier(this);
+        TelegramClient.telegramCommandHandler = new HandlerTelegramCommand(this);
         TelegramClient.telegramCommandHandler.scan();
     }
 

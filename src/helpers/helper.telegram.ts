@@ -1,4 +1,4 @@
-class TelegramHelper {
+class HelperTelegram {
 
     public content: string;
 
@@ -25,20 +25,20 @@ class TelegramHelper {
         return this;
     }
 
-    public setDescription(description: string): TelegramHelper {
+    public setDescription(description: string): HelperTelegram {
         this.content += `<pre>${description}</pre>`;
         return this;
     }
 
-    public setField(name: string, desc: string): TelegramHelper {
+    public setField(name: string, desc: string): HelperTelegram {
         this.content += `<b>${name}</b> : <pre>${desc}</pre>`;
         return this;
     }
 
-    public resetContent(): TelegramHelper {
+    public resetContent(): HelperTelegram {
         this.content = '';
         return this;
     }
 }
 
-export default new TelegramHelper();
+export default new HelperTelegram();

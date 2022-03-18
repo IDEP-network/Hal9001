@@ -1,4 +1,4 @@
-export type TNodeException =
+export type TypeNodeException =
     'cannotAccessNodeAlert'
     | 'isCatchingUpAlert'
     | 'aliveAlert'

@@ -52,7 +52,7 @@
 
 Hal9001 listens to Tendermints RPC over 26657 port and relays activity and important information over Discord notifying
 the `operator(s)` of the nodes current status. Hal is also able to listen to multiple nodes at the same time. Hal keeps
-his data in Redis and makes it readily available to the operator(s) via commands on Discord.
+his data in ServiceRedis and makes it readily available to the operator(s) via commands on Discord.
 
 
 <p align="right">(<a href="#top">back to top</a>)</p>
@@ -63,7 +63,7 @@ his data in Redis and makes it readily available to the operator(s) via commands
 ### Built With
 
 * [Node.js](https://nodejs.org/en/)
-* [Redis](https://redis.io/)
+* [ServiceRedis](https://redis.io/)
 * [TypeScript](https://www.typescriptlang.org/)
 * [Discord.js](https://discord.js.org/#/)
 
@@ -171,7 +171,7 @@ _Lets get started_
 
 ## Usage
 
-* clear Redis memory
+* clear ServiceRedis memory
 
 ```sh
 redis-cli FLUSHALL
