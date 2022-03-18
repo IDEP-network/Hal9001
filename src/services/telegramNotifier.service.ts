@@ -1,11 +1,11 @@
 import {TelegramClient} from '../bin/Telegram';
-import Storage from './Storage';
+import Storage from './storage.service';
 import {CONFIGS, TELEGRAM_CONFIGS} from '../configs/configs';
 import {IEmbed} from '../ts/interfaces/IEmbed';
-import TelegramHelper from '../helpers/TelegramHelper';
+import TelegramHelper from '../helpers/telegram.helper';
 import {ALERTS_STATES} from '../ts/constants/alertsStates';
 
-export class TelegramNotifier {
+export class TelegramNotifierService {
 
     constructor(public client: TelegramClient) {
         this.aliveStart()

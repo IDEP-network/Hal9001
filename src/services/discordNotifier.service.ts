@@ -1,12 +1,12 @@
 import {MessageEmbed} from 'discord.js';
 import {DiscordClient} from '../bin/Discord';
-import Storage from './Storage';
+import Storage from './storage.service';
 import {IEmbed} from "../ts/interfaces/IEmbed";
 import {DISCORD_CONFIGS} from "../configs/configs";
 import {ALERTS_STATES} from "../ts/constants/alertsStates";
 
 
-export class Notifier {
+export class DiscordNotifierService {
     constructor(public client: DiscordClient) {
         this.aliveEnter.bind(this)()
     }

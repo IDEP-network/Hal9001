@@ -1,12 +1,12 @@
 import {Client, Message} from 'discord.js';
-import {CommandHandler} from '../handlers/CommandHandler';
-import {Notifier} from '../services/Notifier';
-import Storage from '../services/Storage';
+import {DiscordCommandHandler} from '../handlers/discordCommand.handler';
+import {DiscordNotifierService} from '../services/discordNotifier.service';
+import Storage from '../services/storage.service';
 import {DISCORD_CONFIGS} from "../configs/configs";
 
 export class DiscordClient extends Client {
-    private _commands: CommandHandler = new CommandHandler(this);
-    public static notifier: Notifier;
+    private _commands: DiscordCommandHandler = new DiscordCommandHandler(this);
+    public static notifier: DiscordNotifierService;
 
     constructor() {
         super({
@@ -19,7 +19,7 @@ export class DiscordClient extends Client {
     private onReady() {
         console.log(`Discord >> Logged as ${this?.user.tag}`);
         this._commands.scan();
-        DiscordClient.notifier = new Notifier(this);
+        DiscordClient.notifier = new DiscordNotifierService(this);
     }
 
     private onMessage(message: Message) {
@@ -27,7 +27,7 @@ export class DiscordClient extends Client {
         if (!message.content.startsWith(DISCORD_CONFIGS.PREFIX)) return;
         const [cmd, ...args] = message.content.slice(DISCORD_CONFIGS.PREFIX.length).split(' ');
         const command = this._commands.get(cmd);
-        console.log(cmd, command);
+        console.log(cmd, command, "3333333333333333");
         if (!command) return;
 
         if (!Storage.config.discordOperators.includes(message.author.id)) return message.reply('Missing permission');

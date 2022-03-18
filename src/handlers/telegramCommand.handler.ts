@@ -1,20 +1,24 @@
 import {Collection} from 'discord.js';
+import {DiscordClient} from '../bin/Discord';
 import path from 'path';
+import glob from 'glob';
 import {promisify} from 'util';
 import {BaseCommand} from '../bin/Command';
-import glob from 'glob';
-import {DiscordClient} from '../bin/Discord';
+import {TelegramClient} from '../bin/Telegram';
 
-export class CommandHandler extends Collection<string, BaseCommand> {
-    public aliases: Collection<string, string> = new Collection<string, string>();
+export class TelegramCommandHandler {
+    public store;
 
-    constructor(public client: DiscordClient) {
-        super();
+    // public aliases: Collection<string, string> = new Collection<string, string>();
+
+    constructor(public client: TelegramClient) {
+        this.store = new Map();
     }
 
     async scan() {
         const pathName = path.normalize(__dirname + '/../commands');
-        const commandFiles = await promisify(glob)(pathName + '/**/*.{ts,js}');
+        const commandFiles = await promisify(glob)(pathName + '/**/*.telegram.{ts,js}');
+        console.log(commandFiles, "filessssss")
         commandFiles.forEach(commandPath => this.register.bind(this, commandPath)());
     }
 
@@ -27,13 +31,13 @@ export class CommandHandler extends Collection<string, BaseCommand> {
             let commandName = name;
             if (commandInstance.options.name) commandName = commandInstance.options.name;
 
-            this.set(commandName, commandInstance);
+            this.store.set(commandName, commandInstance);
 
             console.log(`CommandHandler >> Registering command ${commandName}...`);
 
             if (commandInstance.options.aliases.length > 0) {
                 for (const alias of commandInstance.options.aliases) {
-                    this.aliases.set(alias, commandName);
+                    this.store.set(alias, commandName);
                 }
             }
         } catch (e) {

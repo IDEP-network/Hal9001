@@ -1,8 +1,6 @@
-// import {IConfig} from "../interfaces/IConfig";
-
 import {IConfig} from "../ts/interfaces/IConfig";
 
-class Storage {
+class StorageService {
     private _config: IConfig;
 
     get config() {
@@ -23,4 +21,4 @@ class Storage {
     }
 }
 
-export default new Storage();
+export default new StorageService();

@@ -2,8 +2,8 @@ import {Message, MessageEmbed} from 'discord.js'
 import {v4} from 'uuid'
 import {BaseCommand} from '../bin/Command'
 import {DiscordClient} from '../bin/Discord'
-import Redis from '../services/Redis'
-import Storage from '../services/Storage'
+import Redis from '../services/redis.service'
+import Storage from '../services/storage.service'
 
 export default class ConfigCommand extends BaseCommand {
     constructor() {

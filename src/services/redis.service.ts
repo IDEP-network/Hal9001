@@ -1,11 +1,11 @@
 import {RedisCommandArgument} from '@node-redis/client/dist/lib/commands';
 import {createClient} from 'redis';
-import Storage from './Storage';
+import Storage from './storage.service';
 import {CONFIGS, REDIS_CONFIGS} from "../configs/configs";
 import {IConfig} from "../ts/interfaces/IConfig";
 import {INodePayload} from "../ts/interfaces/INodePayload";
 
-class Redis {
+class RedisService {
     private _connection = createClient({
         url: REDIS_CONFIGS.URL
     });
@@ -106,4 +106,4 @@ class Redis {
     }
 }
 
-export default new Redis();
+export default new RedisService();

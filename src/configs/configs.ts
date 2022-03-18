@@ -11,6 +11,7 @@ export const DISCORD_CONFIGS = {
 export const TELEGRAM_CONFIGS = {
     TOKEN: process.env.TELEGRAM_TOKEN,
     CHANNEL: process.env.TELEGRAM_CHANNEL,
+    PREFIX: process.env.TELEGRAM_PREFIX,
 };
 
 export const REDIS_CONFIGS = {

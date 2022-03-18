@@ -1,8 +1,8 @@
 require('fix-esm').register()
 import {TelegramClient} from './bin/Telegram';
 import {BOTS_ACTIVATE, DISCORD_CONFIGS, TELEGRAM_CONFIGS} from './configs/configs';
-import Redis from './services/Redis'
-import {Monitoring} from './services/Monitoring';
+import Redis from './services/redis.service'
+import {MonitoringService} from './services/monitoring.service';
 import {DiscordClient} from './bin/Discord';
 
 
@@ -22,14 +22,11 @@ process.on('unhandledRejection', (e) => {
     const telegramClient = new TelegramClient(TELEGRAM_CONFIGS.TOKEN);
     await telegramClient.launch();
     telegramClient.onReady();
-    // telegramClient.onMessage();
-
-
 
     const client = new DiscordClient();
     client.login(DISCORD_CONFIGS.TOKEN);
     client.on('ready', () => {
-        new Monitoring();
+        new MonitoringService();
     });
 
 })();

@@ -1,8 +1,8 @@
 import {Message, MessageEmbed} from 'discord.js'
 import {BaseCommand} from '../bin/Command'
 import {DiscordClient} from '../bin/Discord'
-import Redis from '../services/Redis'
-import Storage from '../services/Storage'
+import Redis from '../services/redis.service'
+import Storage from '../services/storage.service'
 import {INodePayload} from "../ts/interfaces/INodePayload";
 
 export default class NodeInfoCommand extends BaseCommand {

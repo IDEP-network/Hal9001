@@ -1,10 +1,10 @@
 import {DiscordClient} from '../bin/Discord';
-import Redis from './Redis';
-import Storage from './Storage';
-import MonitoringHelper from '../helpers/MonitoringHelper';
+import Redis from './redis.service';
+import Storage from './storage.service';
+import MonitoringHelper from '../helpers/monitoring.helper';
 import {TelegramClient} from '../bin/Telegram';
 
-export class Monitoring {
+export class MonitoringService {
     constructor() {
         this.cycleTimeout();
     }
