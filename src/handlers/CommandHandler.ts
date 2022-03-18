@@ -13,7 +13,7 @@ export class CommandHandler extends Collection<string, BaseCommand> {
     }
 
     async scan() {
-        const pathName = path.normalize(__dirname + '/../commands')
+        const pathName = path.normalize(__dirname + '/../commands');
         const commandFiles = await promisify(glob)(pathName + '/**/*.{ts,js}');
         commandFiles.forEach(commandPath => this.register.bind(this, commandPath)());
     }
@@ -25,11 +25,11 @@ export class CommandHandler extends Collection<string, BaseCommand> {
             const {name} = path.parse(commandPath);
 
             let commandName = name;
-            if (commandInstance.options.name) commandName = commandInstance.options.name
+            if (commandInstance.options.name) commandName = commandInstance.options.name;
 
             this.set(commandName, commandInstance);
 
-            console.log(`CommandHandler >> Registering command ${commandName}...`)
+            console.log(`CommandHandler >> Registering command ${commandName}...`);
 
             if (commandInstance.options.aliases.length > 0) {
                 for (const alias of commandInstance.options.aliases) {

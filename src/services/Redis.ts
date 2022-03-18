@@ -1,16 +1,17 @@
 import {RedisCommandArgument} from '@node-redis/client/dist/lib/commands';
 import {createClient} from 'redis';
-import {connectionsConfig, discordOptions} from '../Config';
-import {IConfig} from '../interfaces/IConfig';
-import {INodePayload} from '../interfaces/INodePayload';
 import Storage from './Storage';
+import {CONFIGS, REDIS_CONFIGS} from "../configs/configs";
+import {IConfig} from "../ts/interfaces/IConfig";
+import {INodePayload} from "../ts/interfaces/INodePayload";
 
 class Redis {
     private _connection = createClient({
-        url: connectionsConfig.redisUrl
+        url: REDIS_CONFIGS.URL
     });
 
     constructor() {
+        // @ts-ignore
         this._connection.on('error', this.#onError.bind(this))
         this._connection.on('connect', () => console.log('Redis >> Connected'))
     }
@@ -26,11 +27,11 @@ class Redis {
 
     async loadConfig() {
         console.log('Redis >> Loading config')
-        const config: IConfig = discordOptions;
+        const config: IConfig = CONFIGS;
         await this._connection.hGetAll('cfg').then((res) => {
             if (Object.keys(res).length == 0) {
                 console.log(`Storage >> Empty config, overwriting with default`)
-                return this.writeConfig(discordOptions)
+                return this.writeConfig(CONFIGS)
             }
 
             for (const key of Object.keys(res)) {
@@ -43,35 +44,35 @@ class Redis {
             }
 
             return true;
-        })
+        });
 
         await this._connection.hGetAll('node').then((res) => {
             for (const nodeName of Object.keys(res)) {
                 const nodeAddress: any = res[nodeName];
                 config.nodes[nodeName] = nodeAddress
             }
-        })
+        });
 
         console.log('Redis >> Config loaded');
         Storage.config = config;
     }
 
     writeConfig(config: Partial<IConfig>) {
-        console.log(`Redis >> Updating config`)
+        console.log(`Redis >> Updating config`);
         Object.keys(config).forEach(key => {
             let value = config[key];
-            if (Array.isArray(value)) value = value.join(', ')
-            if (typeof value == 'number') value = `${value}n`
+            if (Array.isArray(value)) value = value.join(', ');
+            if (typeof value == 'number') value = `${value}n`;
             if (key == 'nodes') {
                 Object.keys(value).forEach(nodeName => {
                     const nodeAddress = value[nodeName];
-                    this._connection.hSet(`node`, nodeName, nodeAddress)
+                    this._connection.hSet('node', nodeName, nodeAddress)
                         .then(() => {
                             console.log(`Redis >> updated node ${nodeName}: ${nodeAddress}`)
                         })
                 })
             } else {
-                this._connection.hSet(`cfg`, key, value)
+                this._connection.hSet('cfg', key, value)
                     .then(() => {
                         console.log(`Redis >> Updated ${key}: ${value}`)
                     })

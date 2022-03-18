@@ -1,4 +1,6 @@
-import {IConfig} from "../interfaces/IConfig";
+// import {IConfig} from "../interfaces/IConfig";
+
+import {IConfig} from "../ts/interfaces/IConfig";
 
 class Storage {
     private _config: IConfig;
@@ -8,7 +10,7 @@ class Storage {
     }
 
     set config(config: IConfig) {
-        console.log(`Storage >> Config overwrited`)
+        console.log(`Storage >> Config overwrited`);
         this._config = config;
         console.log(`Storage >> Config: `, config)
     }

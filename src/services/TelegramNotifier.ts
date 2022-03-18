@@ -1,51 +1,54 @@
-import {telegramConfig} from '../Config';
-import {Telegram} from '../bin/Telegram';
+import {TelegramClient} from '../bin/Telegram';
 import Storage from './Storage';
-import {TelegramHelper} from './TelegramHelper';
-import {IEmbed} from '../interfaces/IEmbed';
+import {CONFIGS, TELEGRAM_CONFIGS} from '../configs/configs';
+import {IEmbed} from '../ts/interfaces/IEmbed';
+import TelegramHelper from '../helpers/TelegramHelper';
+import {ALERTS_STATES} from '../ts/constants/alertsStates';
 
-export class TelegramNotifier extends Telegram {
-    helper;
-    content: string = '';
+export class TelegramNotifier {
 
-    constructor() {
-        super(telegramConfig.telegramToken);
-        this.helper = new TelegramHelper()
-        this.aliveEnter()
+    constructor(public client: TelegramClient) {
+        this.aliveStart()
     }
 
-    aliveEnter() {
-        this.sendAlert({'type': 'aliveAlert'}, telegramConfig.telegramMentioneds)
-        setTimeout(this.aliveEnter.bind(this), Storage.config.notifyCycleTime * 1000)
+    aliveStart() {
+        this.sendAlert({'type': 'aliveAlert'})
+        setTimeout(() => this.aliveStart(), Storage.config.notifyCycleTime * 1000)
     }
 
     generateMsg({type, nodeName, payload, description}: IEmbed, mentioneds: string[]) {
 
-        this.content = ''
-        if (mentioneds.length) this.helper.setMentioneds(mentioneds);
-        this.helper.setTitle(`Alert -> ${type.replace('Alert', '')} \n`);
+        TelegramHelper.resetContent();
 
-        // nodeName ? this.helper.setAuthor(nodeName) : this.helper.setAuthor('')
-        // description ? this.helper.setDescription(description) : this.helper.setDescription('')
-        // console.log(this.helper.getContent())
+        if (mentioneds.length) TelegramHelper.setMentioneds(mentioneds);
+
+        if (nodeName) {
+            TelegramHelper.setAuthor(nodeName)
+        }
+
+        TelegramHelper.setTitle(`Alert -> ${type.replace('Alert', '')} \n`);
+
+        if (description) {
+            TelegramHelper.setDescription(description)
+        }
 
         if (payload) {
-            this.helper.setAuthor(payload.name)
-            payload.catching_up ? this.helper.setField('Catching Up', 'Yes') : this.helper.setField('Catching Up', 'No')
-            this.helper.setField('Voting Power', payload.voting_power)
-            this.helper.setField('Network Peers', payload.n_peers)
+            TelegramHelper.setAuthor(payload.name)
+            payload.catching_up ? TelegramHelper.setField('Catching Up', 'Yes') : TelegramHelper.setField('Catching Up', 'No')
+            TelegramHelper.setField('Voting Power', payload.voting_power)
+            TelegramHelper.setField('Network Peers', payload.n_peers)
         }
-        console.log(this.content)
 
-        return this.helper.getContent()
+        return TelegramHelper.getContent()
     }
 
-    // switchMentioneds(mentioneds: string[]) {
-    // }
-
-    sendAlert(alert: IEmbed, mentioneds: string[]) {
-        // this.switchMentioneds(mentioneds);
-
-        this.telegram.sendMessage(telegramConfig.telegramChannel, this.generateMsg({type: alert.type}, mentioneds), {parse_mode: 'HTML'});
+    sendAlert(alert: IEmbed) {
+        if (!ALERTS_STATES[alert.type]) return;
+        this.client.telegram.sendMessage(TELEGRAM_CONFIGS.CHANNEL, this.generateMsg({
+            type: alert.type,
+            nodeName: alert.nodeName,
+            description: alert.description,
+            payload: alert.payload
+        }, Storage.config.telegramOperators), {parse_mode: 'HTML'});
     }
 }

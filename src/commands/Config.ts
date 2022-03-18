@@ -15,7 +15,7 @@ export default class ConfigCommand extends BaseCommand {
 
     async run(client: DiscordClient, message: Message, args: string[]) {
 
-        const availabeKeys = ['operators', 'nodes', 'cycleTime', 'notifyCycleTime']
+        const availabeKeys = ['operators', 'nodes', 'cycleTime', 'notifyCycleTime'];
         if (args.length < 2 || !availabeKeys.includes(args[0])) return message.reply({
             embeds: [new MessageEmbed()
                 .setColor('RED')
@@ -54,6 +54,7 @@ export default class ConfigCommand extends BaseCommand {
             if (args[0] == 'nodes') {
                 value = Object.keys(value).map(key => `**${key}**: ${value[key]}`).join('\n')
             }
+            // @ts-ignore
             return message.channel.send({
                 embeds: [
                     new MessageEmbed()
@@ -76,11 +77,11 @@ export default class ConfigCommand extends BaseCommand {
                 let target = message.mentions.members.first();
                 if (!target) return message.reply('Invalid target');
                 if (action == 'add') {
-                    config.operators.push(target.user.id);
+                    config.discordOperators.push(target.user.id);
                     description = description + `\n **${target.user}** added!`
                 }
                 if (action == 'remove') {
-                    config.operators = config.operators.filter(op => op != target.user.id)
+                    config.discordOperators = config.discordOperators.filter(op => op != target.user.id)
                     description = description + `\n **${target.user}** removed!`
                 }
                 break;

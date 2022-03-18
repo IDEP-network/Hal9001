@@ -3,7 +3,7 @@ import {BaseCommand} from '../bin/Command'
 import {DiscordClient} from '../bin/Discord'
 import Redis from '../services/Redis'
 import Storage from '../services/Storage'
-import {INodePayload} from '../interfaces/INodePayload'
+import {INodePayload} from "../ts/interfaces/INodePayload";
 
 export default class NodeInfoCommand extends BaseCommand {
     constructor() {
@@ -17,6 +17,7 @@ export default class NodeInfoCommand extends BaseCommand {
         // const nodeInfo = Redis.getNodeData()
         const availableNodes = Object.keys(Storage.config.nodes);
         if (!availableNodes.includes(args[0])) {
+            // @ts-ignore
             return message.channel.send({
                 embeds: [
                     new MessageEmbed()
@@ -36,7 +37,7 @@ export default class NodeInfoCommand extends BaseCommand {
                     .setColor('RED')
                     .setDescription(`Node with address \` ${nodeAddress} \` never be scanned`)
             ]
-        })
+        });
 
         const embed = new MessageEmbed()
             .setColor('GREEN')
@@ -46,7 +47,7 @@ export default class NodeInfoCommand extends BaseCommand {
                 **Node Peers**: \` ${nodeInfo.n_peers} \` 
                 **Voting Power**: \` ${nodeInfo.voting_power} \` 
                 **Status**: \` ${nodeInfo.exception || 'no'} \` 
-            `)
+            `);
 
         message.reply({
             embeds: [embed]

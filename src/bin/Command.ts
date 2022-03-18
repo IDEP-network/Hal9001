@@ -1,6 +1,6 @@
 import {Message} from "discord.js";
 import {DiscordClient} from "./Discord";
-import {ICommandOptions} from "../interfaces/ICommandOption";
+import {ICommandOptions} from "../ts/interfaces/ICommandOption";
 
 export class BaseCommand {
     constructor(public options: ICommandOptions) {

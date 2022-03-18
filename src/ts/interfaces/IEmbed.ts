@@ -1,5 +1,5 @@
 import {INodePayload} from './INodePayload';
-import {NodeException} from '../types/NodeException';
+import {TNodeException} from '../types/TNodeException';
 import {ColorResolvable} from 'discord.js';
 
 export interface IEmbed {
@@ -7,5 +7,5 @@ export interface IEmbed {
     description?: string,
     nodeName?: string,
     payload?: INodePayload,
-    type: NodeException,
+    type: TNodeException,
 }

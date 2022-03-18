@@ -1,10 +1,10 @@
 import {MessageEmbed} from 'discord.js';
 import {DiscordClient} from '../bin/Discord';
-import {connectionsConfig} from '../Config';
-import notificationConfig from '../NotificationConfig';
 import Storage from './Storage';
-import {DiscordOperators} from '../OperatorConfig';
-import {IEmbed} from '../interfaces/IEmbed';
+import {IEmbed} from "../ts/interfaces/IEmbed";
+import {DISCORD_CONFIGS} from "../configs/configs";
+import {ALERTS_STATES} from "../ts/constants/alertsStates";
+
 
 export class Notifier {
     constructor(public client: DiscordClient) {
@@ -19,7 +19,7 @@ export class Notifier {
     generateEmbed({payload, type, color, nodeName, description}: IEmbed) {
         const embed = new MessageEmbed()
             .setColor(color)
-            .setTitle(`Alert -> ${type.replace('Alert', '')}`)
+            .setTitle(`Alert -> ${type.replace('Alert', '')}`);
         if (nodeName) {
             embed.setAuthor({
                 name: `NODE: ${nodeName}`
@@ -28,7 +28,7 @@ export class Notifier {
         if (payload) {
             embed.setAuthor({
                 name: `NODE: ${payload.name}`
-            })
+            });
             embed.addField(`Catching Up`, payload.catching_up ? 'Yes' : 'No', true
             )
                 .addField('Voting Power', payload.voting_power, true)
@@ -43,18 +43,20 @@ export class Notifier {
     }
 
     notify(embed: MessageEmbed, operators: string[], onOperator: boolean) {
-        const channel = this.client.channels.resolve(connectionsConfig.notifyChannel);
+        const channel = this.client.channels.resolve(DISCORD_CONFIGS.CHANNEL);
+        // @ts-ignore
         if (!channel.isText()) return;
         if (!onOperator) operators = [''];
 
+        // @ts-ignore
         channel.send({
             embeds: [embed],
             content: `${operators.map(oper => `<@${oper}>`).join(' ')}`
         })
     }
 
-    generateAlert(alert: IEmbed, onOperator: boolean = DiscordOperators.onOperator) {
-        if (!notificationConfig[alert.type]) return;
+    generateAlert(alert: IEmbed, onOperator: boolean = true) {
+        if (!ALERTS_STATES[alert.type]) return;
 
         this.notify(this.generateEmbed({
             color: alert.color,
@@ -62,6 +64,6 @@ export class Notifier {
             payload: alert.payload,
             description: alert.description,
             nodeName: alert.nodeName
-        }), Storage.config.operators, onOperator)
+        }), Storage.config.discordOperators, onOperator)
     }
 }
