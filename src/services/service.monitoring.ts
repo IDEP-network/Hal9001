@@ -1,10 +1,12 @@
 import {DiscordClient} from '../bin/bin.discord';
-import ServiceRedis from './service.redis';
 import ServiceStorage from './service.storage';
 import MonitoringHelper from '../helpers/helper.monitoring';
 import {TelegramClient} from '../bin/bin.telegram';
+import ServiceRedis from './service.redis';
+import {DISCORD_CONFIGS, TELEGRAM_CONFIGS} from '../configs/configs';
 
 export class ServiceMonitoring {
+
     constructor() {
         this.cycleTimeout();
     }
@@ -23,18 +25,19 @@ export class ServiceMonitoring {
             const nodeInfo = await MonitoringHelper.getNodeInfo(nodeAddress, nodeName);
             if (typeof nodeInfo == 'string') {
                 console.log(`Monitoring >> FATAL: CannotAccessNodeAlert`);
-                DiscordClient.notifier.generateAlert({
-                    color: 'DARK_RED',
-                    type: 'cannotAccessNodeAlert',
-                    nodeName: nodeName
-                }, true);
-                TelegramClient.telegramNotifier.sendAlert({type:"cannotAccessNodeAlert", nodeName: nodeName})
-                // TelegramClient.telegramNotifier
+                if (DISCORD_CONFIGS.DISCORD_BOT_IS_ACTIVATED) {
+                    DiscordClient.notifier.generateAlert({
+                        color: 'DARK_RED',
+                        type: 'cannotAccessNodeAlert',
+                        nodeName: nodeName
+                    }, true);
+                }
+                if (TELEGRAM_CONFIGS.TELEGRAM_BOT_IS_ACTIVATED) {
+                    TelegramClient.serviceTelegramNotifier.sendAlert({type: "cannotAccessNodeAlert", nodeName: nodeName})
+                }
                 continue;
             }
             MonitoringHelper.compareAmountOfPeersWithBoundary(nodeInfo?.n_peers, nodeName);
-            // let telBot = new Telegram(telegramConfig.telegramToken)
-            // telBot.sendMsg();
             console.log(`Monitoring >> Payload from ${nodeAddress}: `, nodeInfo)
             ServiceRedis.setNodeData(nodeAddress, nodeInfo);
         }

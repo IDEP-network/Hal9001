@@ -26,16 +26,16 @@ class HelperTelegram {
     }
 
     public setDescription(description: string): HelperTelegram {
-        this.content += `<pre>${description}</pre>`;
+        this.content += `${description}`;
         return this;
     }
 
     public setField(name: string, desc: string): HelperTelegram {
-        this.content += `<b>${name}</b> : <pre>${desc}</pre>`;
+        this.content += `<b>${name}</b> : <b>${desc}</b>`;
         return this;
     }
 
-    public resetContent(): HelperTelegram {
+    public resetContent() {
         this.content = '';
         return this;
     }

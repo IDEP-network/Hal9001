@@ -1,21 +1,21 @@
-import fetch from 'node-fetch';
-
 import {TypeNodeException} from '../ts/types/type.nodeException';
 import {InterfaceNodePayload} from '../ts/interfaces/interface.nodePayload';
 import {DiscordClient} from '../bin/bin.discord';
-import {ALERTS_MESSAGES} from '../ts/constants/constant.alertsMessages';
-import {CONFIGS} from '../configs/configs';
-import {ALERTS_STATES} from '../ts/constants/constant.alertsStates';
+import {CONSTANT_ALERTS_MESSAGES} from '../ts/constants/constant.alertsMessages';
+import {CONFIGS, DISCORD_CONFIGS, TELEGRAM_CONFIGS} from '../configs/configs';
+import {CONSTANT_ALERTS_STATES} from '../ts/constants/constant.alertsStates';
 import {TelegramClient} from '../bin/bin.telegram';
+import {UtilFetchNodeData} from '../utils/util.fetchNodeData';
 
 class HelperMonitoring {
 
     async getNodeInfo(nodeAddress: string, nodeName: string): Promise<TypeNodeException | InterfaceNodePayload> {
-        const apiUrl = `http://${nodeAddress}`;
-        const response: any = await fetch(`${apiUrl}/status`).then(res => res.json()).catch(e => (null));
+
+        const response: any = await UtilFetchNodeData.getNodeStatus(nodeAddress);
+
         if (!response) return 'cannotAccessNodeAlert';
 
-        const responseNetInfo: any = await fetch(`${apiUrl}/net_info`).then(res => res.json());
+        const responseNetInfo: any = await UtilFetchNodeData.getNetInfo();
 
         const catching_up = response.result.sync_info.catching_up;
 
@@ -37,60 +37,76 @@ class HelperMonitoring {
 
     compareAmountOfPeersWithBoundary(peersAmount, nodeName) {
         if (typeof peersAmount === 'undefined' || peersAmount === null) {
-            DiscordClient.notifier.generateAlert({
-                color: 'DEFAULT',
-                type: 'infoAlert',
-                nodeName: nodeName,
-                description: ALERTS_MESSAGES.N_PEERS_IS_NULL
-            }, true)
-            TelegramClient.telegramNotifier.sendAlert({
-                type: 'infoAlert',
-                nodeName: nodeName,
-                description: ALERTS_MESSAGES.N_PEERS_IS_NULL
-            })
+            if (DISCORD_CONFIGS.DISCORD_BOT_IS_ACTIVATED) {
+                DiscordClient.notifier.generateAlert({
+                    color: 'DEFAULT',
+                    type: 'infoAlert',
+                    nodeName: nodeName,
+                    description: CONSTANT_ALERTS_MESSAGES.N_PEERS_IS_NULL
+                }, true);
+            }
+            if (TELEGRAM_CONFIGS.TELEGRAM_BOT_IS_ACTIVATED) {
+                TelegramClient.serviceTelegramNotifier.sendAlert({
+                    type: 'infoAlert',
+                    nodeName: nodeName,
+                    description: CONSTANT_ALERTS_MESSAGES.N_PEERS_IS_NULL
+                });
+            }
         } else {
             if (peersAmount > CONFIGS.nodesBoundaryNumber) {
-                DiscordClient.notifier.generateAlert({
-                    color: 'DEFAULT',
-                    type: 'infoAlert',
-                    nodeName: nodeName,
-                    description: ALERTS_MESSAGES.N_PEERS_IS_MORE
-                }, true)
-                TelegramClient.telegramNotifier.sendAlert({
-                    type: 'infoAlert',
-                    nodeName: nodeName,
-                    description: ALERTS_MESSAGES.N_PEERS_IS_MORE
-                })
-                ALERTS_STATES.infoAlert = false
-                ALERTS_STATES.minorAlert = true
+                if (DISCORD_CONFIGS.DISCORD_BOT_IS_ACTIVATED) {
+                    DiscordClient.notifier.generateAlert({
+                        color: 'DEFAULT',
+                        type: 'infoAlert',
+                        nodeName: nodeName,
+                        description: CONSTANT_ALERTS_MESSAGES.N_PEERS_IS_MORE
+                    }, true);
+                }
+                if (TELEGRAM_CONFIGS.TELEGRAM_BOT_IS_ACTIVATED) {
+                    TelegramClient.serviceTelegramNotifier.sendAlert({
+                        type: 'infoAlert',
+                        nodeName: nodeName,
+                        description: CONSTANT_ALERTS_MESSAGES.N_PEERS_IS_MORE
+                    })
+                }
+                CONSTANT_ALERTS_STATES.infoAlert = false
+                CONSTANT_ALERTS_STATES.minorAlert = true
             } else if (peersAmount < CONFIGS.nodesBoundaryNumber) {
-                DiscordClient.notifier.generateAlert({
-                    color: 'DEFAULT',
-                    type: 'minorAlert',
-                    nodeName: nodeName,
-                    description: ALERTS_MESSAGES.N_PEERS_IS_LESS
-                }, true)
-                TelegramClient.telegramNotifier.sendAlert({
-                    type: 'minorAlert',
-                    nodeName: nodeName,
-                    description: ALERTS_MESSAGES.N_PEERS_IS_LESS
-                })
-                ALERTS_STATES.minorAlert = false
-                ALERTS_STATES.infoAlert = true
+                if (DISCORD_CONFIGS.DISCORD_BOT_IS_ACTIVATED) {
+                    DiscordClient.notifier.generateAlert({
+                        color: 'DEFAULT',
+                        type: 'minorAlert',
+                        nodeName: nodeName,
+                        description: CONSTANT_ALERTS_MESSAGES.N_PEERS_IS_LESS
+                    }, true);
+                }
+                if (TELEGRAM_CONFIGS.TELEGRAM_BOT_IS_ACTIVATED) {
+                    TelegramClient.serviceTelegramNotifier.sendAlert({
+                        type: 'minorAlert',
+                        nodeName: nodeName,
+                        description: CONSTANT_ALERTS_MESSAGES.N_PEERS_IS_LESS
+                    });
+                }
+                CONSTANT_ALERTS_STATES.minorAlert = false
+                CONSTANT_ALERTS_STATES.infoAlert = true
             } else {
-                DiscordClient.notifier.generateAlert({
-                    color: 'DEFAULT',
-                    type: 'infoAlert',
-                    nodeName: nodeName,
-                    description: ALERTS_MESSAGES.N_PEERS_IS_EQUAL
-                }, true)
-                TelegramClient.telegramNotifier.sendAlert({
-                    type: 'infoAlert',
-                    nodeName: nodeName,
-                    description: ALERTS_MESSAGES.N_PEERS_IS_EQUAL
-                })
-                ALERTS_STATES.minorAlert = true
-                ALERTS_STATES.infoAlert = true
+                if (DISCORD_CONFIGS.DISCORD_BOT_IS_ACTIVATED) {
+                    DiscordClient.notifier.generateAlert({
+                        color: 'DEFAULT',
+                        type: 'infoAlert',
+                        nodeName: nodeName,
+                        description: CONSTANT_ALERTS_MESSAGES.N_PEERS_IS_EQUAL
+                    }, true);
+                }
+                if (TELEGRAM_CONFIGS.TELEGRAM_BOT_IS_ACTIVATED) {
+                    TelegramClient.serviceTelegramNotifier.sendAlert({
+                        type: 'infoAlert',
+                        nodeName: nodeName,
+                        description: CONSTANT_ALERTS_MESSAGES.N_PEERS_IS_EQUAL
+                    })
+                }
+                CONSTANT_ALERTS_STATES.minorAlert = true
+                CONSTANT_ALERTS_STATES.infoAlert = true
             }
         }
     }

@@ -1,9 +1,9 @@
 import {TelegramClient} from '../bin/bin.telegram';
 import ServiceStorage from './service.storage';
-import {CONFIGS, TELEGRAM_CONFIGS} from '../configs/configs';
-import {InterfaceEmbed} from '../ts/interfaces/interface.embed';
+import {TELEGRAM_CONFIGS} from '../configs/configs';
+import {InterfaceAlert} from '../ts/interfaces/interface.alert';
 import TelegramHelper from '../helpers/helper.telegram';
-import {ALERTS_STATES} from '../ts/constants/constant.alertsStates';
+import {CONSTANT_ALERTS_STATES} from '../ts/constants/constant.alertsStates';
 
 export class ServiceTelegramNotifier {
 
@@ -16,39 +16,44 @@ export class ServiceTelegramNotifier {
         setTimeout(() => this.aliveStart(), ServiceStorage.config.notifyCycleTime * 1000)
     }
 
-    generateMsg({type, nodeName, payload, description}: InterfaceEmbed, mentioneds: string[]) {
+    generateAlert({type, nodeName, payload, description, title}: InterfaceAlert, operators: string[]) {
 
         TelegramHelper.resetContent();
 
-        if (mentioneds.length) TelegramHelper.setMentioneds(mentioneds);
+        if (operators.length) TelegramHelper.setMentioneds(operators);
 
-        if (nodeName) {
-            TelegramHelper.setAuthor(nodeName)
-        }
+        if (nodeName) TelegramHelper.setAuthor(nodeName);
 
-        TelegramHelper.setTitle(`Alert -> ${type.replace('Alert', '')} \n`);
+        if (type) TelegramHelper.setTitle(`Alert -> ${type.replace('Alert', '')} \n`);
 
-        if (description) {
-            TelegramHelper.setDescription(description)
-        }
+        if (title) TelegramHelper.setTitle(`${title} \n`);
+
+        if (description) TelegramHelper.setDescription(description);
 
         if (payload) {
             TelegramHelper.setAuthor(payload.name)
             payload.catching_up ? TelegramHelper.setField('Catching Up', 'Yes') : TelegramHelper.setField('Catching Up', 'No')
-            TelegramHelper.setField('Voting Power', payload.voting_power)
-            TelegramHelper.setField('Network Peers', payload.n_peers)
+            TelegramHelper.setField('Voting Power', payload.voting_power).setField('Network Peers', payload.n_peers);
         }
 
-        return TelegramHelper.getContent()
+        return TelegramHelper.getContent();
     }
 
-    sendAlert(alert: InterfaceEmbed) {
-        if (!ALERTS_STATES[alert.type]) return;
-        this.client.telegram.sendMessage(TELEGRAM_CONFIGS.CHANNEL, this.generateMsg({
+    sendAlert(alert: InterfaceAlert) {
+        if (!CONSTANT_ALERTS_STATES[alert.type]) return;
+        this.client.telegram.sendMessage(TELEGRAM_CONFIGS.CHANNEL, this.generateAlert({
             type: alert.type,
             nodeName: alert.nodeName,
             description: alert.description,
-            payload: alert.payload
-        }, ServiceStorage.config.telegramOperators), {parse_mode: 'HTML'});
+            payload: alert.payload,
+        }, ServiceStorage.config.t_operators), {parse_mode: 'HTML'});
+    }
+
+    sendMessage(alert: InterfaceAlert) {
+        this.client.telegram.sendMessage(TELEGRAM_CONFIGS.CHANNEL, this.generateAlert({
+            nodeName: alert.nodeName,
+            description: alert.description,
+            title: alert.title
+        }, ServiceStorage.config.t_operators), {parse_mode: 'HTML'});
     }
 }

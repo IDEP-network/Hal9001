@@ -1,16 +1,14 @@
 import {Message, MessageEmbed} from 'discord.js'
 import {BaseCommand} from '../bin/bin.command'
 import {DiscordClient} from '../bin/bin.discord'
-import ServiceRedis from '../services/service.redis'
 import ServiceStorage from '../services/service.storage'
 import {InterfaceNodePayload} from '../ts/interfaces/interface.nodePayload';
+import ServiceRedis from '../services/service.redis';
 
 export default class CommandDiscordNodeInfo extends BaseCommand {
+
     constructor() {
-        super({
-            name: 'node_info',
-            aliases: ['ni']
-        })
+        super({name: 'node_info', aliases: ['ni']});
     }
 
     async run(client: DiscordClient, message: Message, args: string[]) {

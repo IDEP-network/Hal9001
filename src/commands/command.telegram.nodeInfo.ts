@@ -1,24 +1,20 @@
-import {Message} from 'discord.js'
-
 import {BaseCommand} from '../bin/bin.command'
-import ServiceRedis from '../services/service.redis'
 import ServiceStorage from '../services/service.storage'
 import {InterfaceNodePayload} from '../ts/interfaces/interface.nodePayload';
 import {TelegramClient} from '../bin/bin.telegram';
+import ServiceRedis from '../services/service.redis';
 
 export default class CommandTelegramNodeInfo extends BaseCommand {
+
     constructor() {
-        super({
-            name: 'node_info',
-            aliases: ['ni']
-        })
+        super({name: 'node_info', aliases: ['ni']})
     }
 
-    async run(client: TelegramClient, message: Message, args: string[]) {
+    async run(client: TelegramClient, message, args: string[]) {
         const availableNodes = Object.keys(ServiceStorage.config.nodes);
         if (!availableNodes.includes(args[0])) {
             // @ts-ignore
-            return TelegramClient.telegramNotifier.sendAlert({
+            return TelegramClient.serviceTelegramNotifier.sendAlert({
                 type: 'aliveAlert',
                 description: `Available nodes: \n${availableNodes.map(node => ` ${node} `).join(', ')}`
             });
@@ -27,12 +23,12 @@ export default class CommandTelegramNodeInfo extends BaseCommand {
         const nodeAddress = ServiceStorage.config.nodes[args[0]];
         const nodeInfo: InterfaceNodePayload = await ServiceRedis.getNodeData(nodeAddress);
 
-        if (!nodeInfo) return TelegramClient.telegramNotifier.sendAlert({
+        if (!nodeInfo) return TelegramClient.serviceTelegramNotifier.sendAlert({
             type: 'infoAlert',
             description: `Node with address \` ${nodeAddress} \` never be scanned`
         });
 
-        TelegramClient.telegramNotifier.sendAlert({
+        TelegramClient.serviceTelegramNotifier.sendAlert({
             type: 'infoAlert', description: `
                 **Catching Up**: \` ${nodeInfo.catching_up} \`
                 **Node Peers**: \` ${nodeInfo.n_peers} \`

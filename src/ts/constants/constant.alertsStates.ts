@@ -1,4 +1,4 @@
-export const ALERTS_STATES = {
+export const CONSTANT_ALERTS_STATES = {
     aliveAlert: true,
     cannotAccessNodeAlert: true,
     isCatchingUpAlert: true,

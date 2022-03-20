@@ -3,53 +3,34 @@ import {v4} from 'uuid';
 
 import {BaseCommand} from '../bin/bin.command';
 import {DiscordClient} from '../bin/bin.discord';
-import ServiceRedis from '../services/service.redis';
 import ServiceStorage from '../services/service.storage';
+import ServiceRedis from '../services/service.redis';
+import {CONSTANT_DISCORD_COMMAND_MESSAGES} from '../ts/constants/constant.discordCommandMessages';
 
 export default class CommandDiscordConfig extends BaseCommand {
+
     constructor() {
-        super({
-            name: 'config',
-            aliases: ['ni']
-        })
+        super({name: 'config', aliases: ['ni']})
     }
 
     async run(client: DiscordClient, message: Message, args: string[]) {
 
-        const availabeKeys = ['discordOperators', 'nodes', 'cycleTime', 'notifyCycleTime'];
+        const availabeKeys = ['d_operators', 'nodes', 'cycleTime', 'notifyCycleTime'];
         if (args.length < 2 || !availabeKeys.includes(args[0])) return message.reply({
             embeds: [new MessageEmbed()
                 .setColor('RED')
                 .setTitle(`Invalid usage`)
-                .setDescription(`
-                    **Usage** - \` discordOperators \`
-                    config discordOperators add <@mention>
-                    config discordOperators remove <@mention>
-                    config discordOperators view
-                    
-                    **Usage** - \` nodes \`
-                    config nodes add <node_address> <?name>
-                    config nodes remove <name>
-                    config nodes view
-                    **Usage** - \` cycleTime \`
-                    config cycleTime set <time in seconds>
-                    config cycleTime view
-                    **Usage** - \` notifyCycleTime \`
-                    config notifyCycleTime set <time in seconds>
-                    config notifyCycleTime view
-                `)
+                .setDescription(CONSTANT_DISCORD_COMMAND_MESSAGES.CONFIGS)
             ]
         })
 
         const config = ServiceStorage.config;
 
-        // key [action] value
-
         if (args[1] == 'view' && args.length == 2) {
             let value = ServiceStorage.config[args[0]];
             if (!value) value = 'Key not found'
             console.log(value)
-            if (args[0] == 'discordOperators') {
+            if (args[0] == 'd_operators') {
                 value = value.map(val => `<@${val}>`).join(', ')
             }
             if (args[0] == 'nodes') {
@@ -74,15 +55,15 @@ export default class CommandDiscordConfig extends BaseCommand {
         `
 
         switch (args[0]) {
-            case 'discordOperators': {
+            case 'd_operators': {
                 let target = message.mentions.members.first();
                 if (!target) return message.reply('Invalid target');
                 if (action == 'add') {
-                    config.discordOperators.push(target.user.id);
+                    config.d_operators.push(target.user.id);
                     description = description + `\n **${target.user}** added!`
                 }
                 if (action == 'remove') {
-                    config.discordOperators = config.discordOperators.filter(op => op != target.user.id)
+                    config.d_operators = config.d_operators.filter(op => op != target.user.id)
                     description = description + `\n **${target.user}** removed!`
                 }
                 break;

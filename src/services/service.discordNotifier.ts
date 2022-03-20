@@ -2,12 +2,13 @@ import {MessageEmbed} from 'discord.js';
 
 import {DiscordClient} from '../bin/bin.discord';
 import ServiceStorage from './service.storage';
-import {InterfaceEmbed} from "../ts/interfaces/interface.embed";
+import {InterfaceAlert} from "../ts/interfaces/interface.alert";
 import {DISCORD_CONFIGS} from "../configs/configs";
-import {ALERTS_STATES} from "../ts/constants/constant.alertsStates";
+import {CONSTANT_ALERTS_STATES} from "../ts/constants/constant.alertsStates";
 
 
 export class ServiceDiscordNotifier {
+
     constructor(public client: DiscordClient) {
         this.aliveEnter.bind(this)()
     }
@@ -17,7 +18,7 @@ export class ServiceDiscordNotifier {
         setTimeout(this.aliveEnter.bind(this), ServiceStorage.config.notifyCycleTime * 1000)
     }
 
-    generateEmbed({payload, type, color, nodeName, description}: InterfaceEmbed) {
+    generateEmbed({payload, type, color, nodeName, description}: InterfaceAlert) {
         const embed = new MessageEmbed()
             .setColor(color)
             .setTitle(`Alert -> ${type.replace('Alert', '')}`);
@@ -45,19 +46,17 @@ export class ServiceDiscordNotifier {
 
     notify(embed: MessageEmbed, operators: string[], onOperator: boolean) {
         const channel = this.client.channels.resolve(DISCORD_CONFIGS.CHANNEL);
-        // @ts-ignore
         if (!channel.isText()) return;
         if (!onOperator) operators = [''];
 
-        // @ts-ignore
         channel.send({
             embeds: [embed],
             content: `${operators.map(oper => `<@${oper}>`).join(' ')}`
         })
     }
 
-    generateAlert(alert: InterfaceEmbed, onOperator: boolean = true) {
-        if (!ALERTS_STATES[alert.type]) return;
+    generateAlert(alert: InterfaceAlert, onOperator: boolean = true) {
+        if (!CONSTANT_ALERTS_STATES[alert.type]) return;
 
         this.notify(this.generateEmbed({
             color: alert.color,
@@ -65,6 +64,6 @@ export class ServiceDiscordNotifier {
             payload: alert.payload,
             description: alert.description,
             nodeName: alert.nodeName
-        }), ServiceStorage.config.discordOperators, onOperator)
+        }), ServiceStorage.config.d_operators, onOperator)
     }
 }

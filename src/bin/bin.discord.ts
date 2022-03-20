@@ -1,12 +1,12 @@
 import {Client, Message} from 'discord.js';
 
-import {HandlerDiscordCommand} from '../commands/handlers/handler.discordCommand';
+import {HandlerDiscordCommands} from '../commandsHandlers/handler.discordCommands';
 import {ServiceDiscordNotifier} from '../services/service.discordNotifier';
 import ServiceStorage from '../services/service.storage';
 import {DISCORD_CONFIGS} from '../configs/configs';
 
 export class DiscordClient extends Client {
-    private _commands: HandlerDiscordCommand = new HandlerDiscordCommand(this);
+    private _commands: HandlerDiscordCommands = new HandlerDiscordCommands(this);
     public static notifier: ServiceDiscordNotifier;
 
     constructor() {
@@ -30,7 +30,7 @@ export class DiscordClient extends Client {
         const command = this._commands.get(cmd);
         if (!command) return;
 
-        if (!ServiceStorage.config.discordOperators.includes(message.author.id)) return message.reply('Missing permission');
+        if (!ServiceStorage.config.d_operators.includes(message.author.id)) return message.reply('Missing permission');
         command.run(this, message, args);
     }
 }

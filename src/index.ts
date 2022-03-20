@@ -1,7 +1,7 @@
 require('fix-esm').register();
 
 import {TelegramClient} from './bin/bin.telegram';
-import {BOTS_ACTIVATE, DISCORD_CONFIGS, TELEGRAM_CONFIGS} from './configs/configs';
+import {DISCORD_CONFIGS, TELEGRAM_CONFIGS} from './configs/configs';
 import ServiceRedis from './services/service.redis';
 import {ServiceMonitoring} from './services/service.monitoring';
 import {DiscordClient} from './bin/bin.discord';
@@ -16,18 +16,35 @@ process.on('unhandledRejection', (e) => {
 });
 
 (async () => {
-    // if (BOTS_ACTIVATE.DISCORD_BOT_IS_ACTIVATED && BOTS_ACTIVATE.TELEGRAM_BOT_IS_ACTIVATED) {
-    await ServiceRedis.connect();
-    await ServiceRedis.loadConfig();
+    if (DISCORD_CONFIGS.DISCORD_BOT_IS_ACTIVATED && TELEGRAM_CONFIGS.TELEGRAM_BOT_IS_ACTIVATED) {
+        await ServiceRedis.client.connect();
+        await ServiceRedis.loadConfig();
 
-    const telegramClient = new TelegramClient(TELEGRAM_CONFIGS.TOKEN);
-    await telegramClient.launch();
-    telegramClient.onReady();
+        const telegramClient = new TelegramClient(TELEGRAM_CONFIGS.TOKEN);
+        await telegramClient.launch();
+        telegramClient.onReady();
 
-    const client = new DiscordClient();
-    client.login(DISCORD_CONFIGS.TOKEN);
-    client.on('ready', () => {
+        const client = new DiscordClient();
+        await client.login(DISCORD_CONFIGS.TOKEN);
+        client.on('ready', () => {
+            new ServiceMonitoring();
+        });
+    } else if (DISCORD_CONFIGS.DISCORD_BOT_IS_ACTIVATED && !TELEGRAM_CONFIGS.TELEGRAM_BOT_IS_ACTIVATED) {
+        await ServiceRedis.client.connect();
+        await ServiceRedis.loadConfig();
+
+        const client = new DiscordClient();
+        await client.login(DISCORD_CONFIGS.TOKEN);
+        client.on('ready', () => {
+            new ServiceMonitoring();
+        });
+    } else if (!DISCORD_CONFIGS.DISCORD_BOT_IS_ACTIVATED && TELEGRAM_CONFIGS.TELEGRAM_BOT_IS_ACTIVATED) {
+        await ServiceRedis.client.connect();
+        await ServiceRedis.loadConfig();
+
+        const telegramClient = new TelegramClient(TELEGRAM_CONFIGS.TOKEN);
+        await telegramClient.launch();
+        telegramClient.onReady();
         new ServiceMonitoring();
-    });
-
+    }
 })();

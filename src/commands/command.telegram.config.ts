@@ -1,11 +1,13 @@
 import {v4} from 'uuid'
 
 import {BaseCommand} from '../bin/bin.command'
-import ServiceRedis from '../services/service.redis'
 import ServiceStorage from '../services/service.storage'
 import {TelegramClient} from '../bin/bin.telegram';
+import ServiceRedis from '../services/service.redis';
+import {ConstantTelegramCommandMessages} from '../ts/constants/constant.telegramCommandMessages';
 
 export default class CommandTelegramConfig extends BaseCommand {
+
     constructor() {
         super({
             name: 'config',
@@ -15,65 +17,43 @@ export default class CommandTelegramConfig extends BaseCommand {
 
     async run(client: TelegramClient, message, args: string[]) {
 
-        const availabeKeys = ['telegramOperators', 'nodes', 'cycleTime', 'notifyCycleTime'];
-        if (args.length < 2 || !availabeKeys.includes(args[0])) return TelegramClient.telegramNotifier.sendAlert({
-            type: 'infoAlert', description: `
-                    **Usage** - telegramOperators
-                    config telegramOperators add mention
-                    config telegramOperators remove mention
-                    config telegramOperators view
-                    
-                    **Usage** - nodes 
-                    config nodes add node_address ?name
-                    config nodes remove name
-                    config nodes view
-                    **Usage** - cycleTime 
-                    config cycleTime set time in seconds
-                    config cycleTime view
-                    **Usage** -  notifyCycleTime 
-                    config notifyCycleTime set time in seconds
-                    config notifyCycleTime view
-                `
-        });
+        const availabeKeys = ['t_operators', 'nodes', 'cycleTime', 'notifyCycleTime'];
+        if (args.length < 2 || !availabeKeys.includes(args[0])) {
+            return TelegramClient.serviceTelegramNotifier.sendMessage({
+                title: 'Invalid usage', description: ConstantTelegramCommandMessages.CONFIGS
+            });
+        }
 
         const config = ServiceStorage.config;
-
-        // key [action] value
 
         if (args[1] == 'view' && args.length == 2) {
             let value = ServiceStorage.config[args[0]];
             if (!value) value = 'Key not found'
             console.log(value)
-            if (args[0] == 'telegramOperators') {
+            if (args[0] == 't_operators') {
                 value = value.map(val => `${val}`).join(', ')
             }
             if (args[0] == 'nodes') {
                 value = Object.keys(value).map(key => `**${key}**: ${value[key]}`).join('\n')
             }
-            // @ts-ignore
-            return TelegramClient.telegramNotifier.sendAlert({
-                type: 'infoAlert', description: `
-                            ${value}
-                        `
+            return TelegramClient.serviceTelegramNotifier.sendMessage({
+                title: `View - ${args[0]}`,
+                description: `${value}`
             })
         }
 
         const action = args[1];
-        let description = `
-            **${action.toUpperCase()} -> ${args[0]}**
-        `
+        let description = `**${action.toUpperCase()} -> ${args[0]}**`;
 
         switch (args[0]) {
-            case 'telegramOperators': {
-                let target = message.mentions.members.first();
-                if (!target) return message.reply('Invalid target');
+            case 't_operators': {
                 if (action == 'add') {
-                    config.telegramOperators.push(target.user.id);
-                    description = description + `\n **${target.user}** added!`
+                    config.t_operators.push(args[2]);
+                    description = description + `\n **${args[2]}** added!`
                 }
                 if (action == 'remove') {
-                    config.telegramOperators = config.telegramOperators.filter(op => op != target.user.id)
-                    description = description + `\n **${target.user}** removed!`
+                    config.t_operators = config.t_operators.filter(op => op != args[2])
+                    description = description + `\n **${args[2]}** removed!  👍`
                 }
                 break;
             }
@@ -112,7 +92,7 @@ export default class CommandTelegramConfig extends BaseCommand {
                 break;
             }
         }
-        TelegramClient.telegramNotifier.sendAlert({type: 'infoAlert', description: description})
+        TelegramClient.serviceTelegramNotifier.sendMessage({description: description})
 
         console.log(config);
 

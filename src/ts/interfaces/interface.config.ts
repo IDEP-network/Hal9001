@@ -4,7 +4,7 @@ export interface InterfaceConfig {
     nodes?: {
         [key in string]: string
     },
-    discordOperators?: string[],
-    telegramOperators?: string[],
+    d_operators?: string[],
+    t_operators?: string[],
     nodesBoundaryNumber?: number
 }
