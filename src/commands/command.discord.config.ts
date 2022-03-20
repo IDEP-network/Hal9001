@@ -1,59 +1,42 @@
-import {Message, MessageEmbed} from 'discord.js'
-import {v4} from 'uuid'
-import {BaseCommand} from '../bin/Command'
-import {DiscordClient} from '../bin/Discord'
-import Redis from '../services/Redis'
-import Storage from '../services/Storage'
+import {Message, MessageEmbed} from 'discord.js';
+import {v4} from 'uuid';
 
-export default class ConfigCommand extends BaseCommand {
+import {BaseCommand} from '../bin/bin.command';
+import {DiscordClient} from '../bin/bin.discord';
+import ServiceStorage from '../services/service.storage';
+import ServiceRedis from '../services/service.redis';
+import {CONSTANT_DISCORD_COMMAND_MESSAGES} from '../ts/constants/constant.discordCommandMessages';
+
+export default class CommandDiscordConfig extends BaseCommand {
+
     constructor() {
-        super({
-            name: 'config',
-            aliases: ['ni']
-        })
+        super({name: 'config', aliases: ['ni']})
     }
 
     async run(client: DiscordClient, message: Message, args: string[]) {
 
-        const availabeKeys = ['operators', 'nodes', 'cycleTime', 'notifyCycleTime']
+        const availabeKeys = ['d_operators', 'nodes', 'cycleTime', 'notifyCycleTime'];
         if (args.length < 2 || !availabeKeys.includes(args[0])) return message.reply({
             embeds: [new MessageEmbed()
                 .setColor('RED')
                 .setTitle(`Invalid usage`)
-                .setDescription(`
-                    **Usage** - \` operators \`
-                    config operators add <@mention>
-                    config operators remove <@mention>
-                    config operators view
-                    
-                    **Usage** - \` nodes \`
-                    config nodes add <node_address> <?name>
-                    config nodes remove <name>
-                    config nodes view
-                    **Usage** - \` cycleTime \`
-                    config cycleTime set <time in seconds>
-                    config cycleTime view
-                    **Usage** - \` notifyCycleTime \`
-                    config notifyCycleTime set <time in seconds>
-                    config notifyCycleTime view
-                `)
+                .setDescription(CONSTANT_DISCORD_COMMAND_MESSAGES.CONFIGS)
             ]
         })
 
-        const config = Storage.config;
-
-        // key [action] value
+        const config = ServiceStorage.config;
 
         if (args[1] == 'view' && args.length == 2) {
-            let value = Storage.config[args[0]];
+            let value = ServiceStorage.config[args[0]];
             if (!value) value = 'Key not found'
             console.log(value)
-            if (args[0] == 'operators') {
+            if (args[0] == 'd_operators') {
                 value = value.map(val => `<@${val}>`).join(', ')
             }
             if (args[0] == 'nodes') {
                 value = Object.keys(value).map(key => `**${key}**: ${value[key]}`).join('\n')
             }
+            // @ts-ignore
             return message.channel.send({
                 embeds: [
                     new MessageEmbed()
@@ -72,15 +55,15 @@ export default class ConfigCommand extends BaseCommand {
         `
 
         switch (args[0]) {
-            case 'operators': {
+            case 'd_operators': {
                 let target = message.mentions.members.first();
                 if (!target) return message.reply('Invalid target');
                 if (action == 'add') {
-                    config.operators.push(target.user.id);
+                    config.d_operators.push(target.user.id);
                     description = description + `\n **${target.user}** added!`
                 }
                 if (action == 'remove') {
-                    config.operators = config.operators.filter(op => op != target.user.id)
+                    config.d_operators = config.d_operators.filter(op => op != target.user.id)
                     description = description + `\n **${target.user}** removed!`
                 }
                 break;
@@ -95,10 +78,10 @@ export default class ConfigCommand extends BaseCommand {
                 }
                 if (action == 'remove') {
                     const target = args[2]
-                    let node = Storage.config.nodes[target];
+                    let node = ServiceStorage.config.nodes[target];
                     if (!node) return message.reply('Invalid node');
                     delete config.nodes[target];
-                    Redis.removeNode(target)
+                    ServiceRedis.removeNode(target)
                     description = description + `\n  **${node}** (\`${target}\`) removed!`
                 }
                 break;
@@ -131,7 +114,7 @@ export default class ConfigCommand extends BaseCommand {
 
         console.log(config);
 
-        Storage.config = config;
-        Redis.writeConfig(config);
+        ServiceStorage.config = config;
+        ServiceRedis.writeConfig(config);
     }
 }

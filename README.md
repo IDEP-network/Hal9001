@@ -66,6 +66,7 @@ his data in Redis and makes it readily available to the operator(s) via commands
 * [Redis](https://redis.io/)
 * [TypeScript](https://www.typescriptlang.org/)
 * [Discord.js](https://discord.js.org/#/)
+* [Telegraf.js](https://telegraf.js.org/)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 

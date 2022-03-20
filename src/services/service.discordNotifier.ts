@@ -1,25 +1,27 @@
 import {MessageEmbed} from 'discord.js';
-import {DiscordClient} from '../bin/Discord';
-import {connectionsConfig} from '../Config';
-import notificationConfig from '../NotificationConfig';
-import Storage from './Storage';
-import operatorConfig from '../OperatorConfig';
-import {IEmbed} from '../interfaces/IEmbed';
 
-export class Notifier {
+import {DiscordClient} from '../bin/bin.discord';
+import ServiceStorage from './service.storage';
+import {InterfaceAlert} from "../ts/interfaces/interface.alert";
+import {DISCORD_CONFIGS} from "../configs/configs";
+import {CONSTANT_ALERTS_STATES} from "../ts/constants/constant.alertsStates";
+
+
+export class ServiceDiscordNotifier {
+
     constructor(public client: DiscordClient) {
         this.aliveEnter.bind(this)()
     }
 
     aliveEnter() {
         this.generateAlert({color: 'YELLOW', type: 'aliveAlert'}, true);
-        setTimeout(this.aliveEnter.bind(this), Storage.config.notifyCycleTime * 1000)
+        setTimeout(this.aliveEnter.bind(this), ServiceStorage.config.notifyCycleTime * 1000)
     }
 
-    generateEmbed({payload, type, color, nodeName, description}: IEmbed) {
+    generateEmbed({payload, type, color, nodeName, description}: InterfaceAlert) {
         const embed = new MessageEmbed()
             .setColor(color)
-            .setTitle(`Alert -> ${type.replace('Alert', '')}`)
+            .setTitle(`Alert -> ${type.replace('Alert', '')}`);
         if (nodeName) {
             embed.setAuthor({
                 name: `NODE: ${nodeName}`
@@ -28,7 +30,7 @@ export class Notifier {
         if (payload) {
             embed.setAuthor({
                 name: `NODE: ${payload.name}`
-            })
+            });
             embed.addField(`Catching Up`, payload.catching_up ? 'Yes' : 'No', true
             )
                 .addField('Voting Power', payload.voting_power, true)
@@ -43,7 +45,7 @@ export class Notifier {
     }
 
     notify(embed: MessageEmbed, operators: string[], onOperator: boolean) {
-        const channel = this.client.channels.resolve(connectionsConfig.notifyChannel);
+        const channel = this.client.channels.resolve(DISCORD_CONFIGS.CHANNEL);
         if (!channel.isText()) return;
         if (!onOperator) operators = [''];
 
@@ -53,8 +55,8 @@ export class Notifier {
         })
     }
 
-    generateAlert(alert: IEmbed, onOperator: boolean = operatorConfig.onOperator) {
-        if (!notificationConfig[alert.type]) return;
+    generateAlert(alert: InterfaceAlert, onOperator: boolean = true) {
+        if (!CONSTANT_ALERTS_STATES[alert.type]) return;
 
         this.notify(this.generateEmbed({
             color: alert.color,
@@ -62,6 +64,6 @@ export class Notifier {
             payload: alert.payload,
             description: alert.description,
             nodeName: alert.nodeName
-        }), Storage.config.operators, onOperator)
+        }), ServiceStorage.config.d_operators, onOperator)
     }
 }

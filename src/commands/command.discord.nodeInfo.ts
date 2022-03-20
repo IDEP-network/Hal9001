@@ -1,22 +1,20 @@
 import {Message, MessageEmbed} from 'discord.js'
-import {BaseCommand} from '../bin/Command'
-import {DiscordClient} from '../bin/Discord'
-import Redis from '../services/Redis'
-import Storage from '../services/Storage'
-import {INodePayload} from '../interfaces/INodePayload'
+import {BaseCommand} from '../bin/bin.command'
+import {DiscordClient} from '../bin/bin.discord'
+import ServiceStorage from '../services/service.storage'
+import {InterfaceNodePayload} from '../ts/interfaces/interface.nodePayload';
+import ServiceRedis from '../services/service.redis';
 
-export default class NodeInfoCommand extends BaseCommand {
+export default class CommandDiscordNodeInfo extends BaseCommand {
+
     constructor() {
-        super({
-            name: 'node_info',
-            aliases: ['ni']
-        })
+        super({name: 'node_info', aliases: ['ni']});
     }
 
     async run(client: DiscordClient, message: Message, args: string[]) {
-        // const nodeInfo = Redis.getNodeData()
-        const availableNodes = Object.keys(Storage.config.nodes);
+        const availableNodes = Object.keys(ServiceStorage.config.nodes);
         if (!availableNodes.includes(args[0])) {
+            // @ts-ignore
             return message.channel.send({
                 embeds: [
                     new MessageEmbed()
@@ -27,8 +25,8 @@ export default class NodeInfoCommand extends BaseCommand {
             })
         }
 
-        const nodeAddress = Storage.config.nodes[args[0]];
-        const nodeInfo: INodePayload = await Redis.getNodeData(nodeAddress);
+        const nodeAddress = ServiceStorage.config.nodes[args[0]];
+        const nodeInfo: InterfaceNodePayload = await ServiceRedis.getNodeData(nodeAddress);
 
         if (!nodeInfo) return message.reply({
             embeds: [
@@ -36,7 +34,7 @@ export default class NodeInfoCommand extends BaseCommand {
                     .setColor('RED')
                     .setDescription(`Node with address \` ${nodeAddress} \` never be scanned`)
             ]
-        })
+        });
 
         const embed = new MessageEmbed()
             .setColor('GREEN')
@@ -46,7 +44,7 @@ export default class NodeInfoCommand extends BaseCommand {
                 **Node Peers**: \` ${nodeInfo.n_peers} \` 
                 **Voting Power**: \` ${nodeInfo.voting_power} \` 
                 **Status**: \` ${nodeInfo.exception || 'no'} \` 
-            `)
+            `);
 
         message.reply({
             embeds: [embed]
