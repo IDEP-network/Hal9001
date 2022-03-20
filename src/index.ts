@@ -16,10 +16,11 @@ process.on('unhandledRejection', (e) => {
 });
 
 (async () => {
-    if (DISCORD_CONFIGS.DISCORD_BOT_IS_ACTIVATED && TELEGRAM_CONFIGS.TELEGRAM_BOT_IS_ACTIVATED) {
-        await ServiceRedis.client.connect();
-        await ServiceRedis.loadConfig();
 
+    await ServiceRedis.client.connect();
+    await ServiceRedis.loadConfig();
+
+    if (DISCORD_CONFIGS.DISCORD_BOT_IS_ACTIVATED && TELEGRAM_CONFIGS.TELEGRAM_BOT_IS_ACTIVATED) {
         const telegramClient = new TelegramClient(TELEGRAM_CONFIGS.TOKEN);
         await telegramClient.launch();
         telegramClient.onReady();
@@ -30,18 +31,12 @@ process.on('unhandledRejection', (e) => {
             new ServiceMonitoring();
         });
     } else if (DISCORD_CONFIGS.DISCORD_BOT_IS_ACTIVATED && !TELEGRAM_CONFIGS.TELEGRAM_BOT_IS_ACTIVATED) {
-        await ServiceRedis.client.connect();
-        await ServiceRedis.loadConfig();
-
         const client = new DiscordClient();
         await client.login(DISCORD_CONFIGS.TOKEN);
         client.on('ready', () => {
             new ServiceMonitoring();
         });
     } else if (!DISCORD_CONFIGS.DISCORD_BOT_IS_ACTIVATED && TELEGRAM_CONFIGS.TELEGRAM_BOT_IS_ACTIVATED) {
-        await ServiceRedis.client.connect();
-        await ServiceRedis.loadConfig();
-
         const telegramClient = new TelegramClient(TELEGRAM_CONFIGS.TOKEN);
         await telegramClient.launch();
         telegramClient.onReady();

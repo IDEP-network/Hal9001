@@ -26,6 +26,6 @@ export const CONFIGS = {
     nodesBoundaryNumber: 40,                  // Boundary Number of Nodes
     nodes: {'test': '143.110.246.141:26657'},
     d_operators: ['915532926249222144'],      //Discord operators
-    t_operators: ['karen111_bot', 'ArenGr'],  // Telegram Operators
+    t_operators: ['karen111_bot'],  // Telegram Operators
 };
 
